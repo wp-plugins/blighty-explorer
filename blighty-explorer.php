@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.0.0');
+define('PLUGIN_VERSION', '1.1.0');
  
 require_once("Dropbox/DropboxClient.php");
 
@@ -44,8 +44,13 @@ $dropbox = new DropboxClient(array(
 	'app_full_access' => false,
 	),'en');
 
-add_action('admin_menu', 'bex_setup_menu');
-add_action('admin_notices', 'bex_plugin_prequesites');
+if ( is_admin() ){ // admin actions
+	add_action('admin_menu', 'bex_setup_menu');
+	add_action('admin_notices', 'bex_plugin_prequesites');
+	add_action('admin_init', 'bex_init');
+}
+
+
  
 function bex_plugin_prequesites() {
 	$slug = "svg-vector-icon-plugin";
@@ -69,82 +74,128 @@ function bex_plugin_prequesites() {
 	echo '</p></div>';
 }
 
-function bex_setup_menu(){
-	add_menu_page( 'Blighty Explorer Page', 'Blighty Explorer', 'manage_options', 'blighty-explorer-plugin', 'bex_admin_init', 'dashicons-index-card' );
+function bex_init() {
+	register_setting( 'bex_option-settings', 'bex_folder', 'bex_folder_validate');
 	register_setting( 'bex_option-settings-bts', 'bex_dropbox_token' );
-	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );
+	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );	
+}
+
+function bex_setup_menu(){
+	add_menu_page( 'Blighty Explorer', 'Blighty Explorer', 'manage_options', 'blighty-explorer-plugin', 'bex_admin_settings', 'dashicons-index-card' );
 }
  
-function bex_admin_init(){
+function bex_admin_settings(){
 	global $dropbox;
 ?>
 	<div class="wrap">
 		<h2><?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?></h2>
-		<div id="poststuff" class="metabox-holder has-right-sidebar">
-			<div class="inner-sidebar">
-				<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">						<div class="postbox">
-					<h3 class="hndle">Support this plugin</h3>
-					<div class="inside">
-						If you find this plugin useful, please consider supporting it and future development. Thank you.<br /><br />
-						<div align="center">
-							<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-							<input type="hidden" name="cmd" value="_donations">
-							<input type="hidden" name="business" value="2D9PDAS9FDDCA">
-							<input type="hidden" name="lc" value="US">
-							<input type="hidden" name="item_name" value="Blighty Explorer Plugin">
-							<input type="hidden" name="item_number" value="BEP001A">
-							<input type="hidden" name="button_subtype" value="services">
-							<input type="hidden" name="no_note" value="1">
-							<input type="hidden" name="no_shipping" value="1">
-							<input type="hidden" name="currency_code" value="USD">
-							<input type="hidden" name="bn" value="PP-BuyNowBF:btn_donateCC_LG.gif:NonHosted">
-							<input type="hidden" name="on0" value="website">
-							<input type="hidden" name="os0" value="<?php echo $_SERVER['SERVER_NAME']; ?>">
-							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-							<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-							</form>
+		<?php
+//		if( isset($_GET['settings-updated']) ) { 
+//			echo '<div class="updated"><p>Settings saved.</p></div>';
+//		} else 
+		if (isset($_GET['auth_callback'])) {
+			echo '<div class="updated"><p>Dropbox connection successful.</p></div>';
+		} else if (isset($_GET['bex_reset'])) {
+			echo '<div class="updated"><p>Dropbox connection has been reset.</p></div>';
+		}
+		settings_errors();
+		?>
+			<div id="poststuff" class="metabox-holder has-right-sidebar">
+				<div class="inner-sidebar">
+					<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">						<div class="postbox">
+						<h3>Support this plugin</h3>
+						<div class="inside">
+							If you find this plugin useful, please consider supporting it and future development. Thank you.<br /><br />
+							<div align="center">
+								<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+								<input type="hidden" name="cmd" value="_donations">
+								<input type="hidden" name="business" value="2D9PDAS9FDDCA">
+								<input type="hidden" name="lc" value="US">
+								<input type="hidden" name="item_name" value="Blighty Explorer Plugin">
+								<input type="hidden" name="item_number" value="BEP001A">
+								<input type="hidden" name="button_subtype" value="services">
+								<input type="hidden" name="no_note" value="1">
+								<input type="hidden" name="no_shipping" value="1">
+								<input type="hidden" name="currency_code" value="USD">
+								<input type="hidden" name="bn" value="PP-BuyNowBF:btn_donateCC_LG.gif:NonHosted">
+								<input type="hidden" name="on0" value="website">
+								<input type="hidden" name="os0" value="<?php echo $_SERVER['SERVER_NAME']; ?>">
+								<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+								<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+								</form>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="has-sidebar">
-			<div id="post-body-content" class="has-sidebar-content">
-				<div class="meta-box-sortabless">
-					<div class="postbox">
-						<h3 class="hndle">Configuration and Usage</h3>
-						<div class="inside">
-							<ol>
-								<li>Connect this plugin to your Dropbox account (see below).</li>
-								<li>This will create a subfolder called <b>Blighty Explorer</b> in your <b>Apps</b> folder within Dropbox.</li>
-								<li>Place your folders and files you wish to share with this Wordpress installation inside the <b>Apps/Blighty Explorer</b> subfolder.</li>
-								<li>Use the shortcode <b>[bex_folder]</b> in your post or page to display a folder structure / file navigator.</li>
-							</ol>
+			<div class="has-sidebar">
+				<div id="post-body-content" class="has-sidebar-content">
+					<div class="meta-box-sortabless">
+						<div class="postbox">
+							<h3>Configuration and Usage</h3>
+							<div class="inside">
+								<ol>
+									<li>Connect this plugin to your Dropbox account (see below).</li>
+									<li>This will create a subfolder called <b>Blighty Explorer</b> in your <b>Apps</b> folder within Dropbox.</li>
+									<li>Place your folders and files you wish to share with this Wordpress installation inside the <b>Apps/Blighty Explorer</b> subfolder.</li>
+									<li>Use the shortcode <b>[bex_folder]</b> in your post or page to display a folder structure / file navigator.</li>
+								</ol>
+							</div>
 						</div>
-					</div>
-					<div class="postbox">
-						<h3 class="hndle">Dropbox Authentication</h3>
-						<div class="inside">
-							<?php 
-							settings_fields( 'bex_option-settings' ); 
-							do_settings_fields( 'bex_option-settings', '' );
-							$rc = handle_dropbox_auth($dropbox);
-							if ($rc == 0) {
-								echo "You have successfully connected this Blighty Explorer plugin to your Dropbox account.<br /><br />";
-								echo '<a href="?page=blighty-explorer-plugin&bex_reset=1">Reset Dropbox connection.</a><br /><br />';
-							} elseif ($rc == 2) {
-								echo "Dropbox connection has been reset.<br /><br />";
+						<div class="postbox">
+							<h3>Dropbox Authentication &amp; Setup</h3>
+							<div class="inside">
+								<form method="post" action="options.php">
+								<?php
+									settings_fields('bex_option-settings'); 
+//									do_settings_fields('bex_option-settings', '');
+								?>
+
+								<?php 
 								$rc = handle_dropbox_auth($dropbox);
-							}
-							?>							
+								if ($rc == 0) {
+									echo "You have successfully connected the Blighty Explorer plugin to your Dropbox account.<br /><br />";
+									echo "By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ";
+									echo "If you want to set the root folder to be shared to a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder.<br /><br />";
+									
+									?>
+									<b>Root Folder:</b> <input type="text" name="bex_folder" value="<?php echo esc_attr( get_option('bex_folder') ); ?>" />
+									<?php 
+									submit_button();
+									echo '<a href="?page=blighty-explorer-plugin&bex_reset=1">Reset Dropbox connection.</a><br /><br />';
+								} elseif ($rc == 2) {
+									echo "Dropbox connection has been reset.<br /><br />";
+									$rc = handle_dropbox_auth($dropbox);
+								}
+								?>		
+								</form>					
+							</div>
 						</div>
 					</div>
 				</div>
+				<?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?> by <a href="http://blighty.net" target="_blank">Blighty</a>
 			</div>
-			<?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?> by <a href="http://blighty.net" target="_blank">Blighty</a>
-		</div>
+
 	</div>
 <?php
+}
+
+function bex_folder_validate($input){
+
+	if (preg_match('#^(\/)?((\w)+(\.|\&|\-|\/|\(|\))*(\w)*)*(\/)?$#',$input)) {
+		$output = $input;
+		// Valid path, but add / if not at front...
+		if (substr($input,0,1) != '/') {
+			$output = '/' .$output;
+		}
+	} else {
+		add_settings_error( 'mbex_option-settings', 'invalid-folder', 'You have entered an invalid root folder.', "error" );
+		$output = "";
+	}
+	
+	return $output;
+
+//	return apply_filters( 'bex_folder_validate', $output, $input );
 }
 
 function store_token($token, $name)
@@ -215,53 +266,61 @@ function handle_dropbox_auth($dropbox)
 
 function bex_folder( $atts ) {
 	global $dropbox;
-	
-	$out = "";
+			
+	$rootFolder = trailingslashit(get_option('bex_folder'));
 	
 	if (!empty($_GET["folder"])) {
-		$folder = $_GET["folder"];
+		$folder = esc_attr($_GET["folder"]);
+		$folder = ltrim($folder, ".");
 	} else {
 		$folder = "";
 	}
 	
+	$workingFolder = trailingslashit($rootFolder .$folder);
+	
 	$folder = trailingslashit($folder);
 
 	if (!empty($_GET["file"])) {
-		$file = $_GET["file"];
+		$file = esc_attr($_GET["file"]);
 	} else {
 		$file = null;
-	}
+	} 
 	
 	$access_token = load_token("access");
 	if(!empty($access_token)) {
 		$dropbox->SetAccessToken($access_token);
 		if ($dropbox->IsAuthorized()) {
-			$out .= "<pre>";
+			$out .= '<pre class="bxe-wrapper">';
 			if (!is_null($file)) {
-				$url = $dropbox->GetLink($file,false,false);
+				$url = $dropbox->GetLink($rootFolder .$file,false,false);
 				echo '<script language="javascript">window.open("'.$url.'");</script>';
 			}
-			$files = $dropbox->GetFiles($folder);
+			$files = $dropbox->GetFiles($workingFolder);
 		
 			$out .= do_shortcode('[wp-svg-icons icon="folder-open" wrap="i"] ');	
 			$out .= '<a href="?folder=/">Home</a><br />';
-			$splits = explode("/",$folder);
-			$size = sizeof($splits);
-			$j = 1;
-			for ($i = 1; $i < $size - 1; $i++) {
-				$slashpos = strpos($folder,"/",$j);
-				$j = $slashpos + 1;
-				$out .= str_repeat("&nbsp;",($i) * 2) ." &raquo; ";
-				$out .= '<a href="?folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
+			if (substr($folder, 0, strlen($rootFolder)) == $rootFolder) {
+				$folder = substr($folder, strlen($rootFolder));
+			} 
+			if (strlen($folder) > 1) {
+				$splits = explode("/",untrailingslashit($folder));
+				$size = count($splits);
+				$j = 1;
+				for ($i = 0; $i < $size; $i++) {
+					$slashpos = strpos($folder,"/",$j);
+					$j = $slashpos + 1;
+					$out .= str_repeat("&nbsp;",$i * 2 + 2) ." &raquo; ";
+					$out .= '<a href="?folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
+				}				
 			}
 			$out .= "<br />";
 			foreach ($files as $file) {
 				if ($file->is_dir) {
 					$out .= do_shortcode('[wp-svg-icons icon="folder" wrap="i"] ');
-					$out .= '<a href="?folder=' .$file->path .'">' .str_ireplace($folder,"",$file->path) ."</a><br />";
+					$out .= '<a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a><br />";
 				} else {
 					$out .= do_shortcode('[wp-svg-icons icon="file-4" wrap="i"] ');				
-					$out .= '<a href="?folder=' .$folder . '&file=' .$file->path .'">' .str_ireplace($folder,"",$file->path) ."</a><br />";
+					$out .= '<a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a><br />";
 				}
 			}			
 			$out .= "</pre>";
