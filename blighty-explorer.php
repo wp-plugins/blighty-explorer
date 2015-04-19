@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.1.0');
+define('PLUGIN_VERSION', '1.1.1');
  
 require_once("Dropbox/DropboxClient.php");
 
@@ -182,7 +182,7 @@ function bex_admin_settings(){
 
 function bex_folder_validate($input){
 
-	if (preg_match('#^(\/)?((\w)+(\.|\&|\-|\/|\(|\))*(\w)*)*(\/)?$#',$input)) {
+	if (preg_match('#^(\/)?((\w)+(\.| |\&|\-|\(|\))*(\w)*(\/)*)*(\/)?$#',$input)) {
 		$output = $input;
 		// Valid path, but add / if not at front...
 		if (substr($input,0,1) != '/') {
