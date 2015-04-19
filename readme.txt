@@ -1,17 +1,17 @@
 === Blighty Explorer ===
 Contributors: Blighty
-Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox
+Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.1.1
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Allows the complete file structure of a folder in Dropbox to be shared and navigated within a Wordpress page or post.
 
 == Description ==
-Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site. This version currently supports a fixed subfolder within the Apps folder of Dropbox.
+Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site. This version currently supports a subfolder within the Apps folder of Dropbox.
 
 == Installation ==
 1. Connect this plugin to your Dropbox account.
@@ -27,6 +27,10 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 Yes. Structure your Apps/Blighty Explorer folder in Dropbox to have two subfolders. Change the root folder in the settings page on each installation to the subfolder you want to share.
 
 == Changelog ==
+= Version 1.1.1 - April 19th, 2015 =
+
+Improved root foldername validation.
+
 = Version 1.1.0 - April 18th, 2015 =
 
 Added admin settings to specify an optional starting (or root) subfolder.
