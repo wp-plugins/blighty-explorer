@@ -1,0 +1,37 @@
+.bex-wrapper {
+	font-family: arial;
+}
+
+.bex-table {
+	display: table;
+	width: 100%;
+}
+
+.bex-row-0  {
+	display: table-row;
+	background: #EEEEEE;
+	width:auto;
+	clear:both;
+}
+
+.bex-row-1  {
+	display: table-row;
+	background: #E7E7E7;
+	width:auto;
+	clear:both;
+}
+
+.bex-row-0:hover, .bex-row-1:hover  {
+	background: #EED7D7;
+}
+
+.bex-cell {
+	display: table-cell;
+	width:auto;
+}
+
+.bex-cell-r {
+	display: table-cell;
+	width:auto;
+	text-align: right;
+}

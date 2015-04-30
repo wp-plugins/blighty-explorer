@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.1.1
+ * Version: 1.2.0
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,13 +34,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.1.1');
+define('PLUGIN_VERSION', '1.2.0');
  
-require_once("Dropbox/DropboxClient.php");
+require_once('Dropbox/DropboxClient.php');
 
 $dropbox = new DropboxClient(array(
-	'app_key' => "ktms6mtlygelqeg", 
-	'app_secret' => "wvl0ll46s2vz9pf",
+	'app_key' => 'ktms6mtlygelqeg', 
+	'app_secret' => 'wvl0ll46s2vz9pf',
 	'app_full_access' => false,
 	),'en');
 
@@ -53,7 +53,7 @@ if ( is_admin() ){ // admin actions
 
  
 function bex_plugin_prequesites() {
-	$slug = "svg-vector-icon-plugin";
+	$slug = 'svg-vector-icon-plugin';
 	$path = $slug .'/wp-svg-icons.php';
 	$plugins = get_plugins();
 	
@@ -76,6 +76,8 @@ function bex_plugin_prequesites() {
 
 function bex_init() {
 	register_setting( 'bex_option-settings', 'bex_folder', 'bex_folder_validate');
+	register_setting( 'bex_option-settings', 'bex_show_moddate');
+	register_setting( 'bex_option-settings', 'bex_show_size');
 	register_setting( 'bex_option-settings-bts', 'bex_dropbox_token' );
 	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );	
 }
@@ -90,9 +92,6 @@ function bex_admin_settings(){
 	<div class="wrap">
 		<h2><?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?></h2>
 		<?php
-//		if( isset($_GET['settings-updated']) ) { 
-//			echo '<div class="updated"><p>Settings saved.</p></div>';
-//		} else 
 		if (isset($_GET['auth_callback'])) {
 			echo '<div class="updated"><p>Dropbox connection successful.</p></div>';
 		} else if (isset($_GET['bex_reset'])) {
@@ -124,6 +123,8 @@ function bex_admin_settings(){
 								<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
 								</form>
 							</div>
+							<br />
+							If you need support or would like to see a new featured implemented, please provide your feedback via the <a href="https://wordpress.org/support/plugin/blighty-explorer">WordPress Plugin Forums</a>.
 						</div>
 					</div>
 				</div>
@@ -148,23 +149,35 @@ function bex_admin_settings(){
 								<form method="post" action="options.php">
 								<?php
 									settings_fields('bex_option-settings'); 
-//									do_settings_fields('bex_option-settings', '');
 								?>
 
 								<?php 
 								$rc = handle_dropbox_auth($dropbox);
 								if ($rc == 0) {
-									echo "You have successfully connected the Blighty Explorer plugin to your Dropbox account.<br /><br />";
-									echo "By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ";
-									echo "If you want to set the root folder to be shared to a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder.<br /><br />";
+									echo 'You have successfully connected the Blighty Explorer plugin to your Dropbox account.<br /><br />';
+									echo 'By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ';
+									echo 'If you want to set the root folder to be shared to a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder.<br /><br />';
 									
-									?>
-									<b>Root Folder:</b> <input type="text" name="bex_folder" value="<?php echo esc_attr( get_option('bex_folder') ); ?>" />
-									<?php 
+									if ( get_option('bex_show_moddate') == '1' ) {
+										$checkedModDate = 'checked ';
+									} else {
+										$checkedModDate = '';
+									}
+									
+									if ( get_option('bex_show_size') == '1' ) {
+										$checkedSize = 'checked ';
+									} else {
+										$checkedSize = '';
+									}
+									
+									echo '<b>Root Folder:</b>&nbsp;<input type="text" name="bex_folder" value="' .esc_attr( get_option('bex_folder') ) .'" /><br /><br />';
+									echo '<b>Show Modification Date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' /><br /><br />';
+									echo '<b>Show Size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br />';
+
 									submit_button();
 									echo '<a href="?page=blighty-explorer-plugin&bex_reset=1">Reset Dropbox connection.</a><br /><br />';
 								} elseif ($rc == 2) {
-									echo "Dropbox connection has been reset.<br /><br />";
+									echo 'Dropbox connection has been reset.<br /><br />';
 									$rc = handle_dropbox_auth($dropbox);
 								}
 								?>		
@@ -195,7 +208,6 @@ function bex_folder_validate($input){
 	
 	return $output;
 
-//	return apply_filters( 'bex_folder_validate', $output, $input );
 }
 
 function store_token($token, $name)
@@ -290,12 +302,14 @@ function bex_folder( $atts ) {
 	if(!empty($access_token)) {
 		$dropbox->SetAccessToken($access_token);
 		if ($dropbox->IsAuthorized()) {
-			$out .= '<pre class="bxe-wrapper">';
+			$out .= '<pre class="bex-wrapper">';
 			if (!is_null($file)) {
 				$url = $dropbox->GetLink($rootFolder .$file,false,false);
 				echo '<script language="javascript">window.open("'.$url.'");</script>';
 			}
 			$files = $dropbox->GetFiles($workingFolder);
+			
+			uasort($files,"bex_sort_compare");
 		
 			$out .= do_shortcode('[wp-svg-icons icon="folder-open" wrap="i"] ');	
 			$out .= '<a href="?folder=/">Home</a><br />';
@@ -313,22 +327,59 @@ function bex_folder( $atts ) {
 					$out .= '<a href="?folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
 				}				
 			}
-			$out .= "<br />";
+			$out .= '<br />';
+			$out .= '<div class="bex-table">';
+			$i = 1;
 			foreach ($files as $file) {
+				$i = 1 - $i;
+				$out .= '<div class="bex-row-' .$i .'">';
 				if ($file->is_dir) {
-					$out .= do_shortcode('[wp-svg-icons icon="folder" wrap="i"] ');
-					$out .= '<a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a><br />";
+					$out .= '<div class="bex-cell">' .do_shortcode('[wp-svg-icons icon="folder" wrap="i"] ') .'</div>';
+					$out .= '<div class="bex-cell"><a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					if (get_option('bex_show_moddate')) {
+						$out .= '<div class="bex-cell-r">&nbsp;</div>';
+					}
+					if (get_option('bex_show_size')) {
+						$out .= '<div class="bex-cell-r">&nbsp;</div>';
+					}
 				} else {
-					$out .= do_shortcode('[wp-svg-icons icon="file-4" wrap="i"] ');				
-					$out .= '<a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a><br />";
+					$out .= '<div class="bex-cell">' .do_shortcode('[wp-svg-icons icon="file-4" wrap="i"] ') .'</div>';				
+					$out .= '<div class="bex-cell"><a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					if (get_option('bex_show_moddate')) {
+						$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
+					}
+					if (get_option('bex_show_size')) {
+						$out .= '<div class="bex-cell-r">' .$file->size .'</div>';
+					}
 				}
+				$out .= '</div>';
 			}			
-			$out .= "</pre>";
+			$out .= '</div>';
+			$out .= '</pre>';
 		}
 	}
 	
 	return $out;
 }
+
+function bex_sort_compare($a, $b) {
+
+	if ($a->is_dir == $b->is_dir) {
+        return strcmp($a->path, $b->path);
+    } else if ($a->is_dir) {
+    	return -1;
+    } else {
+    	return 1;
+    }
+
+}
+
+function bex_add_stylesheet() {
+    wp_enqueue_style( 'bex', plugins_url('style.css', __FILE__),10 ,"1.0.0");
+}
+
+
+add_action('wp_enqueue_scripts','bex_add_stylesheet');
 
 add_shortcode( 'bex_folder', 'bex_folder' );
 ?>
