@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.2.0');
+define('PLUGIN_VERSION', '1.3.0');
  
 require_once('Dropbox/DropboxClient.php');
 
@@ -53,22 +53,53 @@ if ( is_admin() ){ // admin actions
 
  
 function bex_plugin_prequesites() {
+	global $current_user;
+	$userid = $current_user->ID;
+
+//	delete_user_meta( $userid, 'bex_ignore_warning_notice');
+
+	// If "Dismiss" link has been clicked, user meta field is added
+	if ( isset( $_GET['dismiss_me'] ) && 'yes' == $_GET['dismiss_me'] ) {
+		add_user_meta( $userid, 'bex_ignore_warning_notice', 'yes', true );
+		return;
+	}
+	
+	global $pagenow;
+  
+    if ($pagenow != 'plugins.php' && $pagenow != 'admin.php') {
+        return;
+    }
+    
+    // Only show this notice if user hasn't already dismissed it...
+    if ( get_user_meta( $userid, 'bex_ignore_warning_notice' ) ) {
+    	return;
+    }
+	
 	$slug = 'svg-vector-icon-plugin';
 	$path = $slug .'/wp-svg-icons.php';
 	$plugins = get_plugins();
 	
-	if (is_plugin_active($path)) {
+	// This plugin previously used the WP SVG Icons plugin. With version 1.3.0, it is no longer required.
+	// Check to see if it exists and prompt to uninstall. The prompt can be dismissed.
+	
+	if (empty($plugins[$path])) {
 		return;
 	}
-	
-	echo '<div class="update-nag"><p><b>' . PLUGIN_NAME .'</b> plugin requires <b>WP SVG Icons</b> plugin.<br />';
 
-	if (empty($plugins[$path])) {
-		$install_url = wp_nonce_url(admin_url('update.php?action=install-plugin&plugin=' .$slug), 'install-plugin_' .$slug );
-		echo '<a href="' .$install_url .'">Install Plugin</a>';
-	} else {	
-		$activate_url = wp_nonce_url(admin_url('plugins.php?action=activate&plugin=' .$path), 'activate-plugin_' .$path );
-		echo '<a href="' .$activate_url .'">Activate Plugin</a>';
+	global $wp;
+	$dismiss_url = $_SERVER['REQUEST_URI'];
+	if (strpos($dismiss_url,'?') > 0) {
+		$dismiss_url .= '&';
+	} else {
+		$dismiss_url .= '?';
+	}
+	$dismiss_url .= 'dismiss_me=yes';
+
+	echo '<div class="update-nag"><p>The <b>' . PLUGIN_NAME .'</b> plugin used to require the <b>WP SVG Icons</b> plugin. If you\'re not using <b>WP SVG Icons</b> elsewhere, it can be safely removed. <a href="' .$dismiss_url .'">Dismiss</a><br /><br />';
+	
+	if (is_plugin_active($path)) {
+		$deactivate_url = wp_nonce_url(admin_url('plugins.php?action=deactivate&plugin=' .$path), 'deactivate-plugin_' .$path );
+		echo '<a href="' .$deactivate_url .'">Deactivate Plugin</a>';
 	}
 
 	echo '</p></div>';
@@ -280,6 +311,10 @@ function bex_folder( $atts ) {
 	global $dropbox;
 			
 	$rootFolder = trailingslashit(get_option('bex_folder'));
+	$mapIcons = array(
+		"page_white_sound" => "music",
+		"page_white_film" => "film"
+	);
 	
 	if (!empty($_GET["folder"])) {
 		$folder = esc_attr($_GET["folder"]);
@@ -310,8 +345,10 @@ function bex_folder( $atts ) {
 			$files = $dropbox->GetFiles($workingFolder);
 			
 			uasort($files,"bex_sort_compare");
+			
+			$pluginPath = plugin_dir_path( __FILE__ );
 		
-			$out .= do_shortcode('[wp-svg-icons icon="folder-open" wrap="i"] ');	
+			$out .= '<img class="bex-img" src="' .plugins_url( 'icons/folder_explore.png', __FILE__ ) .'" /> ';	
 			$out .= '<a href="?folder=/">Home</a><br />';
 			if (substr($folder, 0, strlen($rootFolder)) == $rootFolder) {
 				$folder = substr($folder, strlen($rootFolder));
@@ -334,8 +371,8 @@ function bex_folder( $atts ) {
 				$i = 1 - $i;
 				$out .= '<div class="bex-row-' .$i .'">';
 				if ($file->is_dir) {
-					$out .= '<div class="bex-cell">' .do_shortcode('[wp-svg-icons icon="folder" wrap="i"] ') .'</div>';
-					$out .= '<div class="bex-cell"><a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/folder.png', __FILE__ ) .'" />&nbsp;';
+					$out .= '<a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">&nbsp;</div>';
 					}
@@ -343,8 +380,12 @@ function bex_folder( $atts ) {
 						$out .= '<div class="bex-cell-r">&nbsp;</div>';
 					}
 				} else {
-					$out .= '<div class="bex-cell">' .do_shortcode('[wp-svg-icons icon="file-4" wrap="i"] ') .'</div>';				
-					$out .= '<div class="bex-cell"><a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$icon = $file->icon;
+					if (!empty($mapIcons[$icon])) {
+						$icon = $mapIcons[$icon];
+					}
+					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
+					$out .= '<a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 					}
@@ -375,7 +416,7 @@ function bex_sort_compare($a, $b) {
 }
 
 function bex_add_stylesheet() {
-    wp_enqueue_style( 'bex', plugins_url('style.css', __FILE__),10 ,"1.0.0");
+    wp_enqueue_style( 'bex', plugins_url('style.css', __FILE__),10 ,"1.3.0");
 }
 
 

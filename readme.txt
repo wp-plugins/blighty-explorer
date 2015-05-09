@@ -3,8 +3,8 @@ Contributors: Blighty
 Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
-Tested up to: 4.2.1
-Stable tag: 1.2.1
+Tested up to: 4.2.2
+Stable tag: 1.3.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,14 +20,26 @@ Allows the complete file structure of a folder in Dropbox to be shared within a 
 4. Use the shortcode [bex_folder] in your post or page to display a folder structure / file navigator.
 
 == Frequently Asked Questions ==
-= What is the WP SVG Icons plugin and why does this plugin need it? =
-WP SVG Icons provides an easy to implement selection of icons that this plugin uses in the folder/file explorer. The Blighty Explorer plugin automatically detects whether the WP SVG Icons plugin is installed and, if not, notifies you and offers links to install and activate it. It's optional, but things won't look right on the front-end if you don't install it.
 
 = Can I use share two different folders from the same Dropbox account on two different installations? =
 Yes. Structure your Apps/Blighty Explorer folder in Dropbox to have two subfolders. Change the root folder in the settings page on each installation to the subfolder you want to share.
 
+= I like the icons in the file explorer. Can I use them in my software? =
+With version 1.3.0, I implemented several icons from the wonderful Silk Icon set by [famfamfam](http://www.famfamfam.com/lab/icons/silk/). They are used under Creative Commons Attribution 3.0 License.
+
+= I've upgraded from Version 1.2.1 or earlier. Do I still need the WP SVG Icons plugin? =
+WP SVG Icons provides an easy to implement selection of icons that this plugin used to use in previous versions. It is no longer required and, if you have no other need for it, can be deactivated and deleted. The current version of the Blighty Explorer plugin will detect the presence of WP SVG Icons and prompt you to uninstall it. You can dismiss this prompt if you like.
+
 == Changelog ==
-= Version 1.2.1 - April 30th, 2015 =
+= Version 1.3.0 - May 9th, 2015 =
+
+Replaced the need for the WP SVG Icons plugin.
+Added new Silk icon set from [famfamfam](http://www.famfamfam.com/lab/icons/silk/).
+Show unique icons by file type.
+Only show notices on all plugins and Blighty Explorer pages in the admin.
+Tidied up the formatting of the Dropbox explorer / folder hierarchy.
+
+= Version 1.2.0 - April 30th, 2015 =
 
 Added stylesheet support for improved formatting.
 Added support to optionally display file modification date and filesize in the folder/file list.
