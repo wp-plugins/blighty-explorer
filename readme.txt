@@ -33,32 +33,32 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 == Changelog ==
 = Version 1.3.0 - May 9th, 2015 =
 
-Replaced the need for the WP SVG Icons plugin.
-Added new Silk icon set from [famfamfam](http://www.famfamfam.com/lab/icons/silk/).
-Show unique icons by file type.
-Only show notices on all plugins and Blighty Explorer pages in the admin.
-Tidied up the formatting of the Dropbox explorer / folder hierarchy.
+* Replaced the need for the WP SVG Icons plugin.
+* Added new Silk icon set from [famfamfam](http://www.famfamfam.com/lab/icons/silk/).
+* Show unique icons by file type.
+* Only show notices on all plugins and Blighty Explorer pages in the admin.
+* Tidied up the formatting of the Dropbox explorer / folder hierarchy.
 
 = Version 1.2.0 - April 30th, 2015 =
 
-Added stylesheet support for improved formatting.
-Added support to optionally display file modification date and filesize in the folder/file list.
-Sorted folders to always display above files in the folder/file list.
-Added a link in the Admin to the WordPress Support Forums for this plugin.
-Tidied up some of the code.
+* Added stylesheet support for improved formatting.
+* Added support to optionally display file modification date and filesize in the folder/file list.
+* Sorted folders to always display above files in the folder/file list.
+* Added a link in the Admin to the WordPress Support Forums for this plugin.
+* Tidied up some of the code.
 
 = Version 1.1.1 - April 19th, 2015 =
 
-Improved root foldername validation.
+* Improved root foldername validation.
 
 = Version 1.1.0 - April 18th, 2015 =
 
-Added admin settings to specify an optional starting (or root) subfolder.
-Added Frequently Asked Questions.
+* Added admin settings to specify an optional starting (or root) subfolder.
+* Added Frequently Asked Questions.
 
 = Version 1.0.0 - April 14th, 2015 =
 
-Initial release.
+* Initial release.
 
 == Upgrade Notice ==
-Added root folder option and support. Added FAQs.
+Added new functionality, improved icons and formatting.
