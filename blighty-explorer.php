@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.3.0');
+define('PLUGIN_VERSION', '1.3.1');
  
 require_once('Dropbox/DropboxClient.php');
 
@@ -86,7 +86,6 @@ function bex_plugin_prequesites() {
 		return;
 	}
 
-	global $wp;
 	$dismiss_url = $_SERVER['REQUEST_URI'];
 	if (strpos($dismiss_url,'?') > 0) {
 		$dismiss_url .= '&';
@@ -346,10 +345,17 @@ function bex_folder( $atts ) {
 			
 			uasort($files,"bex_sort_compare");
 			
+			global $wp;
+			if (!empty($wp->query_string)) {
+				$thisQS = '?' .$wp->query_string .'&';
+			} else {
+				$thisQS = '?';
+			}
+			
 			$pluginPath = plugin_dir_path( __FILE__ );
 		
 			$out .= '<img class="bex-img" src="' .plugins_url( 'icons/folder_explore.png', __FILE__ ) .'" /> ';	
-			$out .= '<a href="?folder=/">Home</a><br />';
+			$out .= '<a href="' .$thisQS .'folder=/">Home</a><br />';
 			if (substr($folder, 0, strlen($rootFolder)) == $rootFolder) {
 				$folder = substr($folder, strlen($rootFolder));
 			} 
@@ -361,18 +367,19 @@ function bex_folder( $atts ) {
 					$slashpos = strpos($folder,"/",$j);
 					$j = $slashpos + 1;
 					$out .= str_repeat("&nbsp;",$i * 2 + 2) ." &raquo; ";
-					$out .= '<a href="?folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
+					$out .= '<a href="' .$thisQS .'folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
 				}				
 			}
 			$out .= '<br />';
 			$out .= '<div class="bex-table">';
+			
 			$i = 1;
 			foreach ($files as $file) {
 				$i = 1 - $i;
 				$out .= '<div class="bex-row-' .$i .'">';
 				if ($file->is_dir) {
 					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/folder.png', __FILE__ ) .'" />&nbsp;';
-					$out .= '<a href="?folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$out .= '<a href="' .$thisQS .'folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">&nbsp;</div>';
 					}
@@ -385,7 +392,7 @@ function bex_folder( $atts ) {
 						$icon = $mapIcons[$icon];
 					}
 					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
-					$out .= '<a href="?folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 					}
