@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('PLUGIN_NAME', 'Blighty Explorer');
-define('PLUGIN_VERSION', '1.3.1');
+define('PLUGIN_VERSION', '1.3.2');
  
 require_once('Dropbox/DropboxClient.php');
 
@@ -131,35 +131,45 @@ function bex_admin_settings(){
 		?>
 			<div id="poststuff" class="metabox-holder has-right-sidebar">
 				<div class="inner-sidebar">
-					<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">						<div class="postbox">
-						<h3>Support this plugin</h3>
-						<div class="inside">
-							If you find this plugin useful, please consider supporting it and future development. Thank you.<br /><br />
-							<div align="center">
-								<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-								<input type="hidden" name="cmd" value="_donations">
-								<input type="hidden" name="business" value="2D9PDAS9FDDCA">
-								<input type="hidden" name="lc" value="US">
-								<input type="hidden" name="item_name" value="Blighty Explorer Plugin">
-								<input type="hidden" name="item_number" value="BEP001A">
-								<input type="hidden" name="button_subtype" value="services">
-								<input type="hidden" name="no_note" value="1">
-								<input type="hidden" name="no_shipping" value="1">
-								<input type="hidden" name="currency_code" value="USD">
-								<input type="hidden" name="bn" value="PP-BuyNowBF:btn_donateCC_LG.gif:NonHosted">
-								<input type="hidden" name="on0" value="website">
-								<input type="hidden" name="os0" value="<?php echo $_SERVER['SERVER_NAME']; ?>">
-								<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-								<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-								</form>
+					<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">						
+						<div class="postbox">
+							<h3>Support this plugin</h3>
+							<div class="inside">
+								If you find this plugin useful, please consider supporting it and future development. Thank you.<br /><br />
+								<div align="center">
+									<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+									<input type="hidden" name="cmd" value="_donations">
+									<input type="hidden" name="business" value="2D9PDAS9FDDCA">
+									<input type="hidden" name="lc" value="US">
+									<input type="hidden" name="item_name" value="Blighty Explorer Plugin">
+									<input type="hidden" name="item_number" value="BEP001A">
+									<input type="hidden" name="button_subtype" value="services">
+									<input type="hidden" name="no_note" value="1">
+									<input type="hidden" name="no_shipping" value="1">
+									<input type="hidden" name="currency_code" value="USD">
+									<input type="hidden" name="bn" value="PP-BuyNowBF:btn_donateCC_LG.gif:NonHosted">
+									<input type="hidden" name="on0" value="website">
+									<input type="hidden" name="os0" value="<?php echo $_SERVER['SERVER_NAME']; ?>">
+									<input type="radio" name="amount" value="5" checked>$5&nbsp;
+									<input type="radio" name="amount" value="10">$10&nbsp;
+									<input type="radio" name="amount" value="20">$20&nbsp;
+									<input type="radio" name="amount" value="40">$40&nbsp;
+									<input type="radio" name="amount" value="">Other<br /><br />
+									<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+									<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+									</form>
+								</div>
 							</div>
-							<br />
-							If you need support or would like to see a new featured implemented, please provide your feedback via the <a href="https://wordpress.org/support/plugin/blighty-explorer">WordPress Plugin Forums</a>.
+						</div>
+						<div class="postbox">
+							<h3>Technical Support</h3>
+							<div class="inside">
+								If you need technical support or would like to see a new featured implemented, please provide your feedback via the <a href="https://wordpress.org/support/plugin/blighty-explorer">WordPress Plugin Forums</a>.
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="has-sidebar">
+
 				<div id="post-body-content" class="has-sidebar-content">
 					<div class="meta-box-sortabless">
 						<div class="postbox">
@@ -310,6 +320,7 @@ function bex_folder( $atts ) {
 	global $dropbox;
 			
 	$rootFolder = trailingslashit(get_option('bex_folder'));
+		
 	$mapIcons = array(
 		"page_white_sound" => "music",
 		"page_white_film" => "film"
@@ -376,10 +387,21 @@ function bex_folder( $atts ) {
 			$i = 1;
 			foreach ($files as $file) {
 				$i = 1 - $i;
+				
+				$filePath = $file->path;
+				$filePathWorking = $filePath;
+				$len = strlen($rootFolder);
+				if (strcasecmp(substr($filePath,0,$len),$rootFolder) == 0) {
+					$filePath = urlencode(substr($filePath,$len));
+				}
+				$len = strlen($workingFolder);
+				if (strcasecmp(substr($filePathWorking,0,$len),$workingFolder) == 0) {
+					$filePathWorking = substr($filePathWorking,$len);
+				}
 				$out .= '<div class="bex-row-' .$i .'">';
 				if ($file->is_dir) {
 					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/folder.png', __FILE__ ) .'" />&nbsp;';
-					$out .= '<a href="' .$thisQS .'folder=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$out .= '<a href="' .$thisQS .'folder=' .$filePath .'">' .$filePathWorking ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">&nbsp;</div>';
 					}
@@ -392,7 +414,7 @@ function bex_folder( $atts ) {
 						$icon = $mapIcons[$icon];
 					}
 					$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
-					$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .str_ireplace($rootFolder,"",$file->path) .'">' .str_ireplace($workingFolder,"",$file->path) ."</a></div>";
+					$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'">' .$filePathWorking ."</a></div>";
 					if (get_option('bex_show_moddate')) {
 						$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 					}

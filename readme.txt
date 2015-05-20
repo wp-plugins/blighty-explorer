@@ -4,7 +4,7 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.2
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,6 +31,11 @@ With version 1.3.0, I implemented several icons from the wonderful Silk Icon set
 WP SVG Icons provides an easy to implement selection of icons that this plugin used to use in previous versions. It is no longer required and, if you have no other need for it, can be deactivated and deleted. The current version of the Blighty Explorer plugin will detect the presence of WP SVG Icons and prompt you to uninstall it. You can dismiss this prompt if you like.
 
 == Changelog ==
+= Version 1.3.2 - May 20th, 2015 =
+
+* Fixed a bug that caused problems with the folder/file navigation with the default path setting of blank or /.
+* Tidied up some HTML in the admin page.
+
 = Version 1.3.1 - May 18th, 2015 =
 
 * Fixed a bug that caused problems with the folder/file navigation when WordPress permalinks were left to their default setting.
@@ -65,4 +70,4 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 * Initial release.
 
 == Upgrade Notice ==
-* 1.3.1 - Minor bug fix for WordPress non-permalinks setting.
+* 1.3.2 - Recommended upgrade. Bug fix to resolve navigation and folder/path issues.
