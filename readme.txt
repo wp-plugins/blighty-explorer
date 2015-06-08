@@ -1,23 +1,26 @@
 === Blighty Explorer ===
 Contributors: Blighty
-Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox
+Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox, dropbox upload
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.2
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Allows the complete file structure of a folder in Dropbox to be shared and navigated within a Wordpress page or post.
+Allows the complete file structure of a folder in Dropbox to be shared and navigated within a Wordpress page or post. Also allows for file uploads.
 
 == Description ==
-Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site. This version supports a subfolder within the Apps folder of Dropbox.
+Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site. 
+
+With version 1.4.0, files can now also be uploaded into Dropbox.
 
 == Installation ==
-1. Connect this plugin to your Dropbox account.
-2. This will create a subfolder called Blighty Explorer in your Apps folder within Dropbox.
-3. Place your folders and files you wish to share with this Wordpress installation inside the Apps/Blighty Explorer subfolder.
-4. Use the shortcode [bex_folder] in your post or page to display a folder structure / file navigator.
+- Connect this plugin to your Dropbox account.
+- This will create a subfolder called Blighty Explorer in your Apps folder within Dropbox.
+- Place your folders and files you wish to share with the WordPress installation inside the Apps/Blighty Explorer subfolder.
+- Use the shortcode [bex_folder] in your post or page to display a folder structure / file navigator.
+- Use the shortcode [bex_upload] in your post or page to display a file upload dialog.
 
 == Frequently Asked Questions ==
 
@@ -30,7 +33,17 @@ With version 1.3.0, I implemented several icons from the wonderful Silk Icon set
 = I've upgraded from Version 1.2.1 or earlier. Do I still need the WP SVG Icons plugin? =
 WP SVG Icons provides an easy to implement selection of icons that this plugin used to use in previous versions. It is no longer required and, if you have no other need for it, can be deactivated and deleted. The current version of the Blighty Explorer plugin will detect the presence of WP SVG Icons and prompt you to uninstall it. You can dismiss this prompt if you like.
 
+= Can I use both [bex_folder] and [bex_upload] on the same page? =
+Absolutely! The plugin is smart enough to tie the two together. For best results, place the shortcodes side by side: [bex_folder][bex_upload]
+
 == Changelog ==
+= Version 1.4.0 - June 8th, 2015 =
+
+* Added upload functionality.
+* Optional email sent to admin when a file is uploaded.
+* Allows files to be uploaded to a dedicated folder for review (not visible in the folder view).
+* Show Dropbox account information in the admin options.
+
 = Version 1.3.2 - May 20th, 2015 =
 
 * Fixed a bug that caused problems with the folder/file navigation with the default path setting of blank or /.
@@ -70,4 +83,4 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 * Initial release.
 
 == Upgrade Notice ==
-* 1.3.2 - Recommended upgrade. Bug fix to resolve navigation and folder/path issues.
+* 1.4.0 - Added upload functionality.

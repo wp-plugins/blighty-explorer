@@ -1,5 +1,10 @@
 .bex-wrapper {
 	font-family: arial;
+	margin: 20px auto; 
+	background: #eeeeee; 
+	border-radius: 10px;
+	border: 1px solid #cccccc; 
+	padding: 15px 	
 }
 
 .bex-table {
@@ -38,4 +43,42 @@
 
 .bex-img {
 	margin-bottom: 1px;
+}
+
+.bex-upload-form {
+	font-family: arial;
+	display: block; 
+	margin: 20px auto; 
+	background: #eeeeee; 
+	border-radius: 10px; 
+	padding: 15px;
+	border: 1px solid #cccccc;	
+}
+
+.bex-upload-form input[type="submit"] {
+	background: #ffffff;
+	border: 1px solid #000000;
+	border-radius: 5px; 
+}
+
+.bex-progress { 
+	position: relative; 
+	width: 400px; 
+	border: 1px solid #000000; 
+	padding: 0px; 
+	border-radius: 5px; 
+}
+
+.bex-bar { 
+	background-color: #EED7D7; 
+	width:0%; 
+	height:20px; 
+	border-radius: 5px; 
+}
+
+.bex-percent { 
+	position: absolute; 
+	display: inline-block; 
+	top: 3px; 
+	left: 48%; 
 }
