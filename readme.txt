@@ -4,7 +4,7 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.2
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,6 +37,13 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 Absolutely! The plugin is smart enough to tie the two together. For best results, place the shortcodes side by side: [bex_folder][bex_upload]
 
 == Changelog ==
+= Version 1.5.0 - June 18th, 2015 =
+
+* Added caching to reduce hits to Dropbox API
+* Added direct link to settings from WordPress' Installed Plugins page.
+* Added option to allow uploads for a user that's not logged in.
+* Cleaned up some code that could have caused conflicts with other plugins.
+
 = Version 1.4.1 - June 9th, 2015 =
 
 * Bug fix. Removed erroneous space from utilities.php.
@@ -87,4 +94,4 @@ Absolutely! The plugin is smart enough to tie the two together. For best results
 * Initial release.
 
 == Upgrade Notice ==
-* 1.4.1 - Bug fix.
+* 1.5.0 - Added caching to reduce hits to Dropbox.

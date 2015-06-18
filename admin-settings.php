@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+v1.5.0
+
 **/
 
 function bex_plugin_prequesites() {
@@ -58,7 +60,7 @@ function bex_plugin_prequesites() {
 	}
 	$dismiss_url .= 'dismiss_me=yes';
 
-	echo '<div class="update-nag"><p>The <b>' . PLUGIN_NAME .'</b> plugin used to require the <b>WP SVG Icons</b> plugin. If you\'re not using <b>WP SVG Icons</b> elsewhere, it can be safely removed. <a href="' .$dismiss_url .'">Dismiss</a><br /><br />';
+	echo '<div class="update-nag"><p>The <b>' . BEX_PLUGIN_NAME .'</b> plugin used to require the <b>WP SVG Icons</b> plugin. If you\'re not using <b>WP SVG Icons</b> elsewhere, it can be safely removed. <a href="' .$dismiss_url .'">Dismiss</a><br /><br />';
 	
 	if (is_plugin_active($path)) {
 		$deactivate_url = wp_nonce_url(admin_url('plugins.php?action=deactivate&plugin=' .$path), 'deactivate-plugin_' .$path );
@@ -72,6 +74,7 @@ function bex_init() {
 	register_setting( 'bex_option-settings', 'bex_folder', 'bex_folder_validate');
 	register_setting( 'bex_option-settings', 'bex_show_moddate');
 	register_setting( 'bex_option-settings', 'bex_show_size');
+	register_setting( 'bex_option-settings', 'bex_noauth_uploads');
 	register_setting( 'bex_option-settings', 'bex_allow_uploads');
 	register_setting( 'bex_option-settings', 'bex_email_upload');
 	register_setting( 'bex_option-settings-bts', 'bex_dropbox_token' );
@@ -81,12 +84,20 @@ function bex_init() {
 function bex_setup_menu(){
 	add_menu_page( 'Blighty Explorer', 'Blighty Explorer', 'manage_options', 'blighty-explorer-plugin', 'bex_admin_settings', 'dashicons-index-card' );
 }
+
+	add_filter( 'plugin_action_links_blighty-explorer/blighty-explorer.php', 'bex_add_action_links' ); 
+
+function bex_add_action_links ( $links ) { 
+	$url = '<a href="' . admin_url( 'admin.php?page=blighty-explorer-plugin' ) . '">Settings</a>';
+	$mylinks = array( $url ); 
+	return array_merge( $mylinks, $links ); 
+}	
  
 function bex_admin_settings(){
 	global $dropbox;
 ?>
 	<div class="wrap">
-		<h2><?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?></h2>
+		<h2><?php echo BEX_PLUGIN_NAME; ?> version <?php echo BEX_PLUGIN_VERSION; ?></h2>
 		<?php
 		if (isset($_GET['auth_callback'])) {
 			echo '<div class="updated"><p>Dropbox connection successful.</p></div>';
@@ -187,30 +198,44 @@ function bex_admin_settings(){
 								}
 								
 								if ( get_option('bex_show_size') == '1' ) {
-									$checkedSize = 'checked ';
+									$checkedSize = ' checked';
 								} else {
 									$checkedSize = '';
 								}
 								
 								if ( get_option('bex_email_upload') == '1' ) {
-									$checkedEmail = 'checked ';
+									$checkedEmail = ' checked';
 								} else {
 									$checkedEmail = '';
+								}
+								
+								if ( get_option('bex_noauth_uploads') == '1' ) {
+									$checkedNoAuthUploads = ' checked';
+								} else {
+									$checkedNoAuthUploads = '';
+								}
+								
+								if ( get_option('bex_nav_type') == '1' ) {
+									$navType0Checked = '';
+									$navType1Checked = ' checked';
+								} else {
+									$navType0Checked = ' checked';									
+									$navType1Checked = '';
 								}
 
 								echo 'By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ';
 								echo 'If you want to share a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder. ';
 								echo 'This allows you to share different subfolders on different WordPress installations.<br /><br />';
 								
-								echo '<b>Root Folder:</b>&nbsp;<input type="text" name="bex_folder" value="' .esc_attr( get_option('bex_folder') ) .'" /><br /><br />';
-								echo '<b>Show Modification Date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' /><br /><br />';
-								echo '<b>Show Size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br /><br />';
-
-								echo 'File uploads via this plugin will be stored in the folder <strong>' .UPLOADS_FOLDER .'</strong> under the <strong>Root Folder</strong> above.<br /><br />';
+								echo '<b>Root folder:</b>&nbsp;<input type="text" name="bex_folder" value="' .esc_attr( get_option('bex_folder') ) .'" /><br /><br />';
+								echo '<b>Show modification date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' /><br /><br />';
+								echo '<b>Show size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br /><br />';
+								echo 'File uploads via this plugin will be stored in the folder <strong>' .BEX_UPLOADS_FOLDER .'</strong> under the <strong>Root folder</strong> above.<br /><br />';
+								echo '<b>Allow uploads when not logged in:</b>&nbsp;<input type="checkbox" name="bex_noauth_uploads" value="1"' .$checkedNoAuthUploads .' /><br /><br />';
 								//echo 'If you want to allow uploads into the folder that the user has navigated to, then check the <strong>Allow Uploads in Active Folder</strong> option below.<br /><br />';
 
 								//echo '<b>Allow Uploads in Active Folder:</b>&nbsp;<input type="checkbox" name="bex_allow_uploads" value="1"' .$checkedAllowUploads .' /><br /><br />';
-								echo '<b>Email Admin on Upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
+								echo '<b>Email admin on upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
 								echo '&nbsp;Check this box to receive an email every time a user uploads a file.<br />';
 								submit_button();
 								
@@ -220,7 +245,7 @@ function bex_admin_settings(){
 						</div>
 					</div>
 				</div>
-				<?php echo PLUGIN_NAME; ?> version <?php echo PLUGIN_VERSION; ?> by <a href="http://blighty.net" target="_blank">Blighty</a>
+				<?php echo BEX_PLUGIN_NAME; ?> version <?php echo BEX_PLUGIN_VERSION; ?> by <a href="http://blighty.net" target="_blank">Blighty</a>
 			</div>
 
 	</div>
