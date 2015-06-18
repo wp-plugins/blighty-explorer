@@ -16,11 +16,14 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+v1.5.0
+
 **/
 
 function bex_folder( $atts ) {
 	global $dropbox;
-			
+	$cache = array();
+		
 	$rootFolder = trailingslashit(get_option('bex_folder'));
 		
 	$mapIcons = array(
@@ -56,16 +59,31 @@ function bex_folder( $atts ) {
 		$out = 'Dropbox not authorized. Check the settings for Blighty Explorer (bex_folder - 2)';
 		return $out;
 	}
-	
-	$out .= '<pre class="bex-wrapper">';
+
 	if (!is_null($file)) {
 		$url = $dropbox->GetLink($rootFolder .$file,false,false);
 		echo '<script language="javascript">window.open("'.$url.'");</script>';
 	}
-	$files = $dropbox->GetFiles($workingFolder);
 	
-	uasort($files,"bex_sort_compare");
+	$cache = get_transient( 'bex_cache' );
 	
+	$splits1 = explode('/',untrailingslashit($rootFolder));
+	$splits2 = explode('/',untrailingslashit($workingFolder));
+	$size1 = count($splits1);
+	$size2 = count($splits2);
+	
+	$files = $cache[$workingFolder];
+	
+	// use the cache, otherwise cache result from Dropbox...
+	if (is_null($files)) { 
+		$files = $dropbox->GetFiles($workingFolder);
+
+		$cache[$workingFolder] = $files;
+		set_transient( 'bex_cache', $cache, 60 );
+	}
+
+	$out = '<pre class="bex-wrapper">';
+				
 	global $wp;
 	if (!empty($wp->query_string)) {
 		$thisQS = '?' .$wp->query_string .'&';
@@ -75,13 +93,15 @@ function bex_folder( $atts ) {
 	
 	$pluginPath = plugin_dir_path( __FILE__ );
 
-	$out .= '<img class="bex-img" src="' .plugins_url( 'icons/folder_explore.png', __FILE__ ) .'" /> ';	
-	$out .= '<a href="' .$thisQS .'folder=/">Home</a><br />';
 	if (substr($folder, 0, strlen($rootFolder)) == $rootFolder) {
 		$folder = substr($folder, strlen($rootFolder));
 	} 
+	
+	// Default navigation: Display a cookie trail above folders/files...
+	$out .= '<img class="bex-img" src="' .plugins_url( 'icons/folder_explore.png', __FILE__ ) .'" /> ';	
+	$out .= '<a href="' .$thisQS .'folder=/">Home</a><br />';
 	if (strlen($folder) > 1) {
-		$splits = explode("/",untrailingslashit($folder));
+		$splits = explode('/',untrailingslashit($folder));
 		$size = count($splits);
 		$j = 1;
 		for ($i = 0; $i < $size; $i++) {
@@ -92,13 +112,17 @@ function bex_folder( $atts ) {
 		}				
 	}
 	$out .= '<br />';
-	$out .= '<div class="bex-table">';
-	
+	$out .= '<div class="bex-table">';		
+		
+	// Sort the folder/file structure...
+	uasort($files,"bex_sort_compare");
+		
 	$i = 1;
 	foreach ($files as $file) {		
 	
 		$filePath = $file->path;
 		$filePathWorking = $filePath;
+		
 		$len = strlen($rootFolder);
 		if (strcasecmp(substr($filePath,0,$len),$rootFolder) == 0) {
 			$filePath = urlencode(substr($filePath,$len));
@@ -108,12 +132,13 @@ function bex_folder( $atts ) {
 			$filePathWorking = substr($filePathWorking,$len);
 		}
 
-		if ($file->is_dir && $filePathWorking == UPLOADS_FOLDER) {
-		// Do nothing, i.e. suppress displaying the UPLOADS_FOLDER...
+		if ($file->is_dir && $filePathWorking == BEX_UPLOADS_FOLDER) {
+		// Do nothing, i.e. suppress displaying the BEX_UPLOADS_FOLDER...
 		} else {
 			$i = 1 - $i;
 		
 			$out .= '<div class="bex-row-' .$i .'">';
+						
 			if ($file->is_dir) {
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/folder.png', __FILE__ ) .'" />&nbsp;';
 				$out .= '<a href="' .$thisQS .'folder=' .$filePath .'">' .$filePathWorking ."</a></div>";
@@ -149,7 +174,7 @@ function bex_folder( $atts ) {
 function bex_sort_compare($a, $b) {
 
 	if ($a->is_dir == $b->is_dir) {
-        return strcmp($a->path, $b->path);
+        return strcasecmp($a->path, $b->path);
     } else if ($a->is_dir) {
     	return -1;
     } else {

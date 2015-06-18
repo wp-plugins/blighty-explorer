@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+v1.5.0
+
 **/
 
 function bex_upload( $atts ) {
@@ -29,8 +31,8 @@ function bex_upload( $atts ) {
 	$out = '<form id="bexUpload" class="bex-upload-form" action="' .admin_url( 'admin-ajax.php' ) .'" method="post" enctype="multipart/form-data">';
 	$out .= '  Select file to upload:';
 	$out .= '  <input type="file" name="bexFile" id="bexFile">';
+	$out .= '  <input type="submit" value="Upload" name="bexSubmit" id="bexSubmit" class="bex-button-submit">';
 	$out .= '  <input type="hidden" name="bexFolder" id="bexFolder" value="' .$folder .'">';
-	$out .= '  <input type="submit" value="Upload" name="bexSubmit" id="bexSubmit" class="bex-buttom-submit">';
 	$out .= '<br /><br /><div class="bex-progress">';
 	$out .= '  <div class="bex-bar"></div >';
 	$out .= '  <div class="bex-percent">0%</div >';
@@ -42,13 +44,18 @@ function bex_upload( $atts ) {
 }
 
 function bex_submission_processor_nopriv() {
+	if (get_option('bex_noauth_uploads')) {
+		bex_submission_processor();
+	} else {
+		echo 'No access.';
+	}
 	die();
 }
 
 function bex_submission_processor() {
 	
 	if(empty($_FILES["bexFile"])) {
-		echo "No file selected.";
+		echo 'No file selected.';
 		die();
 	}
 	
@@ -70,7 +77,7 @@ function bex_submission_processor() {
 	if (get_option('bex_allow_uploads')) {
 		$folder = esc_attr($_POST["bexFolder"]);
 	} else {
-		$folder = UPLOADS_FOLDER;
+		$folder = BEX_UPLOADS_FOLDER;
 	}
 	
 	$workingFolder = trailingslashit($rootFolder .$folder);
@@ -81,13 +88,21 @@ function bex_submission_processor() {
 	}
 	
 	if (get_option('bex_email_upload')) {
-		global $current_user;
-    	get_currentuserinfo();
+    	
+    	if (is_user_logged_in()) {
+			global $current_user;
+    		get_currentuserinfo();
+	    	$userLogin = $current_user->user_login;
+    		$userEmail = $current_user->user_email;
+    	} else {
+    		$userLogin = 'anonymous';
+	    	$userEmail = 'no email';
+    	}
 
 		$headers = 'From: ' .get_bloginfo('name') .' <' .get_bloginfo('admin_email') .'>' . "\r\n";
-		$subj = 'File uploaded from ' .get_bloginfo('name');
-		$body = 'The file "' .$_FILES["bexFile"]["name"] .'" has just been uploaded by ' .$current_user->user_login
-				.' (' .$current_user->user_email .')';
+		$subj = '[' .get_bloginfo('name') .'] File Upload'; 
+		$body = 'The file "' .$_FILES["bexFile"]["name"] .'" has just been uploaded by ' .$userLogin
+				.' (' .$userEmail .')';
 		wp_mail( get_bloginfo('admin_email'), $subj, $body, $headers );
 	}
 	
