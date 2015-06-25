@@ -4,14 +4,14 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.2
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Allows the complete file structure of a folder in Dropbox to be shared and navigated within a Wordpress page or post. Also allows for file uploads.
 
 == Description ==
-Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site. 
+Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site.
 
 With version 1.4.0, files can now also be uploaded into Dropbox.
 
@@ -36,7 +36,18 @@ WP SVG Icons provides an easy to implement selection of icons that this plugin u
 = Can I use both [bex_folder] and [bex_upload] on the same page? =
 Absolutely! The plugin is smart enough to tie the two together. For best results, place the shortcodes side by side: [bex_folder][bex_upload]
 
+= Where has the admin menu gone? =
+With version 1.5.1, you'll find them under the Settings menu.
+
+= It seems my pop-up blocker is stopping file downloads. =
+Prior to version 1.5.1, there may have been problems with certain browsers and/or pop-up blockers. Hopefully this has been resolved with v1.5.1. If you're still having problems, please open a support ticket stating browser and anything help that may help, and I'll take a look to resolve it.
+
 == Changelog ==
+= Version 1.5.1 - June 25th, 2015 =
+
+* Moved the options menu in the admin to under the settings link.
+* Improved the way files are downloaded. Some pop-up blockers were preventing this before.
+
 = Version 1.5.0 - June 18th, 2015 =
 
 * Added caching to reduce hits to Dropbox API
@@ -94,4 +105,4 @@ Absolutely! The plugin is smart enough to tie the two together. For best results
 * Initial release.
 
 == Upgrade Notice ==
-* 1.5.0 - Added caching to reduce hits to Dropbox.
+* 1.5.1 - Improved the way selected files are downloaded from Dropbox.

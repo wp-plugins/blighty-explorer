@@ -6,12 +6,12 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website. It is also provides functionality to allow for uploads to a Dropbox folder.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
  **/
- 
+
 /**
 
 Copyright (C) 2015 Chris Murfin
@@ -30,15 +30,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 **/
- 
+
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('BEX_PLUGIN_NAME', 'Blighty Explorer');
-define('BEX_PLUGIN_VERSION', '1.5.0');
- 
+define('BEX_PLUGIN_VERSION', '1.5.1');
+
 define('BEX_UPLOADS_FOLDER', '_bex_uploads');
 
-define('BEX_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . dirname(plugin_basename(__FILE__))); 
+define('BEX_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . dirname(plugin_basename(__FILE__)));
 
 require_once(BEX_PLUGIN_DIR .'/Dropbox/DropboxClient.php');
 require_once(BEX_PLUGIN_DIR .'/folder.php');
@@ -46,7 +46,7 @@ require_once(BEX_PLUGIN_DIR .'/upload.php');
 require_once(BEX_PLUGIN_DIR .'/utilities.php');
 
 $dropbox = new DropboxClient(array(
-	'app_key' => 'ktms6mtlygelqeg', 
+	'app_key' => 'ktms6mtlygelqeg',
 	'app_secret' => 'wvl0ll46s2vz9pf',
 	'app_full_access' => false,
 	),'en');
