@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.0
+v1.5.1
 
 **/
 
@@ -29,25 +29,25 @@ function bex_plugin_prequesites() {
 		add_user_meta( $userid, 'bex_ignore_warning_notice', 'yes', true );
 		return;
 	}
-	
+
 	global $pagenow;
-  
+
     if ($pagenow != 'plugins.php' && $pagenow != 'admin.php') {
         return;
     }
-    
+
     // Only show this notice if user hasn't already dismissed it...
     if ( get_user_meta( $userid, 'bex_ignore_warning_notice' ) ) {
     	return;
     }
-	
+
 	$slug = 'svg-vector-icon-plugin';
 	$path = $slug .'/wp-svg-icons.php';
 	$plugins = get_plugins();
-	
+
 	// This plugin previously used the WP SVG Icons plugin. With version 1.3.0, it is no longer required.
 	// Check to see if it exists and prompt to uninstall. The prompt can be dismissed.
-	
+
 	if (empty($plugins[$path])) {
 		return;
 	}
@@ -61,7 +61,7 @@ function bex_plugin_prequesites() {
 	$dismiss_url .= 'dismiss_me=yes';
 
 	echo '<div class="update-nag"><p>The <b>' . BEX_PLUGIN_NAME .'</b> plugin used to require the <b>WP SVG Icons</b> plugin. If you\'re not using <b>WP SVG Icons</b> elsewhere, it can be safely removed. <a href="' .$dismiss_url .'">Dismiss</a><br /><br />';
-	
+
 	if (is_plugin_active($path)) {
 		$deactivate_url = wp_nonce_url(admin_url('plugins.php?action=deactivate&plugin=' .$path), 'deactivate-plugin_' .$path );
 		echo '<a href="' .$deactivate_url .'">Deactivate Plugin</a>';
@@ -78,21 +78,21 @@ function bex_init() {
 	register_setting( 'bex_option-settings', 'bex_allow_uploads');
 	register_setting( 'bex_option-settings', 'bex_email_upload');
 	register_setting( 'bex_option-settings-bts', 'bex_dropbox_token' );
-	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );	
+	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );
 }
 
 function bex_setup_menu(){
-	add_menu_page( 'Blighty Explorer', 'Blighty Explorer', 'manage_options', 'blighty-explorer-plugin', 'bex_admin_settings', 'dashicons-index-card' );
+	add_options_page( 'Blighty Explorer', 'Blighty Explorer', 'manage_options', 'blighty-explorer-plugin', 'bex_admin_settings' );
 }
 
-	add_filter( 'plugin_action_links_blighty-explorer/blighty-explorer.php', 'bex_add_action_links' ); 
+	add_filter( 'plugin_action_links_blighty-explorer/blighty-explorer.php', 'bex_add_action_links' );
 
-function bex_add_action_links ( $links ) { 
-	$url = '<a href="' . admin_url( 'admin.php?page=blighty-explorer-plugin' ) . '">Settings</a>';
-	$mylinks = array( $url ); 
-	return array_merge( $mylinks, $links ); 
-}	
- 
+function bex_add_action_links ( $links ) {
+	$url = '<a href="' . admin_url( 'options-general.php?page=blighty-explorer-plugin' ) . '">Settings</a>';
+	$mylinks = array( $url );
+	return array_merge( $mylinks, $links );
+}
+
 function bex_admin_settings(){
 	global $dropbox;
 ?>
@@ -104,8 +104,7 @@ function bex_admin_settings(){
 		} else if (isset($_GET['bex_reset'])) {
 			echo '<div class="updated"><p>Dropbox connection has been reset.</p></div>';
 		}
-		settings_errors();
-		
+
 		?>
 			<div id="poststuff" class="metabox-holder has-right-sidebar">
 				<div class="inner-sidebar">
@@ -128,7 +127,7 @@ function bex_admin_settings(){
 		} elseif ($rc == 2) {
 			$rc = bex_handle_dropbox_auth($dropbox);
 		}
-		?>						
+		?>
 							</div>
 						</div>
 						<div class="postbox">
@@ -188,45 +187,45 @@ function bex_admin_settings(){
 							<div class="inside">
 								<form method="post" action="options.php">
 								<?php
-								
-								settings_fields('bex_option-settings'); 
-								
+
+								settings_fields('bex_option-settings');
+
 								if ( get_option('bex_show_moddate') == '1' ) {
 									$checkedModDate = 'checked ';
 								} else {
 									$checkedModDate = '';
 								}
-								
+
 								if ( get_option('bex_show_size') == '1' ) {
 									$checkedSize = ' checked';
 								} else {
 									$checkedSize = '';
 								}
-								
+
 								if ( get_option('bex_email_upload') == '1' ) {
 									$checkedEmail = ' checked';
 								} else {
 									$checkedEmail = '';
 								}
-								
+
 								if ( get_option('bex_noauth_uploads') == '1' ) {
 									$checkedNoAuthUploads = ' checked';
 								} else {
 									$checkedNoAuthUploads = '';
 								}
-								
+
 								if ( get_option('bex_nav_type') == '1' ) {
 									$navType0Checked = '';
 									$navType1Checked = ' checked';
 								} else {
-									$navType0Checked = ' checked';									
+									$navType0Checked = ' checked';
 									$navType1Checked = '';
 								}
 
 								echo 'By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ';
 								echo 'If you want to share a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder. ';
 								echo 'This allows you to share different subfolders on different WordPress installations.<br /><br />';
-								
+
 								echo '<b>Root folder:</b>&nbsp;<input type="text" name="bex_folder" value="' .esc_attr( get_option('bex_folder') ) .'" /><br /><br />';
 								echo '<b>Show modification date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' /><br /><br />';
 								echo '<b>Show size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br /><br />';
@@ -238,9 +237,9 @@ function bex_admin_settings(){
 								echo '<b>Email admin on upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
 								echo '&nbsp;Check this box to receive an email every time a user uploads a file.<br />';
 								submit_button();
-								
-								?>		
-								</form>					
+
+								?>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -264,7 +263,7 @@ function bex_folder_validate($input){
 		add_settings_error( 'mbex_option-settings', 'invalid-folder', 'You have entered an invalid root folder.', "error" );
 		$output = "";
 	}
-	
+
 	return $output;
 
 }

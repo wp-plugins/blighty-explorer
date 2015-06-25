@@ -16,11 +16,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.0
+v1.5.1
 
 **/
 
 function bex_upload( $atts ) {
+	if (!empty($_GET["file"])) {
+		return '';
+		die();
+	}
+
 	if (!empty($_GET["folder"])) {
 		$folder = esc_attr($_GET["folder"]);
 		$folder = ltrim($folder, ".");
@@ -37,7 +42,7 @@ function bex_upload( $atts ) {
 	$out .= '  <div class="bex-bar"></div >';
 	$out .= '  <div class="bex-percent">0%</div >';
 	$out .= '</div><br />';
-    $out .= '<div id="bexStatus">Ready to upload.</div>';
+  $out .= '<div id="bexStatus">Ready to upload.</div>';
 	$out .= '</form>';
 
 	return $out;
@@ -53,42 +58,42 @@ function bex_submission_processor_nopriv() {
 }
 
 function bex_submission_processor() {
-	
+
 	if(empty($_FILES["bexFile"])) {
 		echo 'No file selected.';
 		die();
 	}
-	
+
 	global $dropbox;
-	
+
 	$access_token = bex_load_token("access");
 	if(empty($access_token)) {
 		echo 'Dropbox not authorized. Check the settings for Blighty Explorer (bex_upload - 1)';
 		die();
 	}
-	
+
 	$dropbox->SetAccessToken($access_token);
 	if (!$dropbox->IsAuthorized()) {
 		echo 'Dropbox not authorized. Check the settings for Blighty Explorer (bex_upload - 2)';
 		die();
 	}
-	
+
 	$rootFolder = trailingslashit(get_option('bex_folder'));
 	if (get_option('bex_allow_uploads')) {
 		$folder = esc_attr($_POST["bexFolder"]);
 	} else {
 		$folder = BEX_UPLOADS_FOLDER;
 	}
-	
+
 	$workingFolder = trailingslashit($rootFolder .$folder);
 
 	if (!empty($_POST['bexSubmit'])) {
 		$dropbox->UploadFile($_FILES["bexFile"]["tmp_name"], $workingFolder .$_FILES["bexFile"]["name"], false);
 		echo 'File uploaded.';
 	}
-	
+
 	if (get_option('bex_email_upload')) {
-    	
+
     	if (is_user_logged_in()) {
 			global $current_user;
     		get_currentuserinfo();
@@ -100,12 +105,12 @@ function bex_submission_processor() {
     	}
 
 		$headers = 'From: ' .get_bloginfo('name') .' <' .get_bloginfo('admin_email') .'>' . "\r\n";
-		$subj = '[' .get_bloginfo('name') .'] File Upload'; 
+		$subj = '[' .get_bloginfo('name') .'] File Upload';
 		$body = 'The file "' .$_FILES["bexFile"]["name"] .'" has just been uploaded by ' .$userLogin
 				.' (' .$userEmail .')';
 		wp_mail( get_bloginfo('admin_email'), $subj, $body, $headers );
 	}
-	
+
 	die();
 
 }
