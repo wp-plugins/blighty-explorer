@@ -42,6 +42,12 @@ With version 1.5.1, you'll find them under the Settings menu.
 = It seems my pop-up blocker is stopping file downloads. =
 Prior to version 1.5.1, there may have been problems with certain browsers and/or pop-up blockers. Hopefully this has been resolved with v1.5.1. If you're still having problems, please open a support ticket stating browser and anything help that may help, and I'll take a look to resolve it.
 
+== Screenshots ==
+
+1. Admin screen to connect to your Dropbox account and set plugin options.
+2. Example folder navigation.
+3. Example file upload.
+
 == Changelog ==
 = Version 1.5.1 - June 25th, 2015 =
 
