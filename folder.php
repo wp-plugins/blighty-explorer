@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.1
+v1.5.2
 
 **/
 
@@ -61,7 +61,7 @@ function bex_folder( $atts ) {
 	if (!is_null($file)) {
 		$url = $dropbox->GetLink($rootFolder .$file,false,false);
 		echo '<meta http-equiv="refresh" content="0;url=' .$url .'"/>';
-		return 'Loading file...';
+		//return 'Loading file...';
 	}
 
 	$cache = get_transient( 'bex_cache' );
@@ -152,8 +152,9 @@ function bex_folder( $atts ) {
 				if (!empty($mapIcons[$icon])) {
 					$icon = $mapIcons[$icon];
 				}
+
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
-				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'" target="_blank">' .$filePathWorking ."</a></div>";
+				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'">' .$filePathWorking ."</a></div>";
 				if (get_option('bex_show_moddate')) {
 					$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 				}

@@ -40,7 +40,7 @@ Absolutely! The plugin is smart enough to tie the two together. For best results
 With version 1.5.1, you'll find them under the Settings menu.
 
 = It seems my pop-up blocker is stopping file downloads. =
-Prior to version 1.5.1, there may have been problems with certain browsers and/or pop-up blockers. Hopefully this has been resolved with v1.5.1. If you're still having problems, please open a support ticket stating browser and anything help that may help, and I'll take a look to resolve it.
+Prior to version 1.5.1, there may have been problems with certain browsers and/or pop-up blockers. Hopefully this has been resolved with v1.5.1. If you're still having problems, please open a support ticket stating browser and anything else that may help, and I'll take a look to resolve it.
 
 == Screenshots ==
 
@@ -49,6 +49,10 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 3. Example file upload.
 
 == Changelog ==
+= Version 1.5.2 - June 25th, 2015 =
+
+* More improvements to file downloads.
+
 = Version 1.5.1 - June 25th, 2015 =
 
 * Moved the options menu in the admin to under the settings link.
@@ -111,4 +115,4 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 * Initial release.
 
 == Upgrade Notice ==
-* 1.5.1 - Improved the way selected files are downloaded from Dropbox.
+* 1.5.2 - Improvements to file downloads.
