@@ -16,16 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.1
+v1.5.2
 
 **/
 
 function bex_upload( $atts ) {
-	if (!empty($_GET["file"])) {
-		return '';
-		die();
-	}
-
 	if (!empty($_GET["folder"])) {
 		$folder = esc_attr($_GET["folder"]);
 		$folder = ltrim($folder, ".");
