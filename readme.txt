@@ -3,8 +3,8 @@ Contributors: Blighty
 Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox, dropbox upload
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
-Tested up to: 4.2.2
-Stable tag: 1.5.2
+Tested up to: 4.2.4
+Stable tag: 1.6.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -42,6 +42,9 @@ With version 1.5.1, you'll find them under the Settings menu.
 = It seems my pop-up blocker is stopping file downloads. =
 Prior to version 1.5.1, there may have been problems with certain browsers and/or pop-up blockers. Hopefully this has been resolved with v1.5.1. If you're still having problems, please open a support ticket stating browser and anything else that may help, and I'll take a look to resolve it.
 
+= I want to only allow logged-in WordPress users or users with certain roles access to using the plugin. How do I do that? =
+Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-specific-content/) in conjunction with this one in order to protect the page.
+
 == Screenshots ==
 
 1. Admin screen to connect to your Dropbox account and set plugin options.
@@ -49,6 +52,11 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 3. Example file upload.
 
 == Changelog ==
+= Version 1.6.0 - August 4th, 2015 =
+
+* Added WordPress Role support.
+* Improved selection of root folder.
+
 = Version 1.5.2 - June 25th, 2015 =
 
 * More improvements to file downloads.
@@ -115,4 +123,4 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 * Initial release.
 
 == Upgrade Notice ==
-* 1.5.2 - Improvements to file downloads.
+* 1.6.0 - Added WordPress Role support.

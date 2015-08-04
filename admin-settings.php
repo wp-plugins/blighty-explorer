@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.1
+v1.6.0
 
 **/
 
@@ -71,14 +71,14 @@ function bex_plugin_prequesites() {
 }
 
 function bex_init() {
-	register_setting( 'bex_option-settings', 'bex_folder', 'bex_folder_validate');
-	register_setting( 'bex_option-settings', 'bex_show_moddate');
-	register_setting( 'bex_option-settings', 'bex_show_size');
-	register_setting( 'bex_option-settings', 'bex_noauth_uploads');
-	register_setting( 'bex_option-settings', 'bex_allow_uploads');
-	register_setting( 'bex_option-settings', 'bex_email_upload');
-	register_setting( 'bex_option-settings-bts', 'bex_dropbox_token' );
-	register_setting( 'bex_option-settings-bts', 'bex_dropbox_temp_token' );
+	register_setting( 'bex_option-options', 'bex_folder');
+	register_setting( 'bex_option-options', 'bex_show_moddate');
+	register_setting( 'bex_option-options', 'bex_show_size');
+	register_setting( 'bex_option-options', 'bex_noauth_uploads');
+	register_setting( 'bex_option-options', 'bex_email_upload');
+	register_setting( 'bex_option-auth', 'bex_folder_auth', 'bex_folder_auth_validate');
+	register_setting( 'bex_option-options-bts', 'bex_dropbox_token' );
+	register_setting( 'bex_option-options-bts', 'bex_dropbox_temp_token' );
 }
 
 function bex_setup_menu(){
@@ -108,7 +108,7 @@ function bex_admin_settings(){
 		?>
 			<div id="poststuff" class="metabox-holder has-right-sidebar">
 				<div class="inner-sidebar">
-					<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">
+					<div id="side-sortables" class="meta-box-sortables ui-sortable" style="position:relative;">
 						<div class="postbox">
 							<h3>Dropbox Information</h3>
 							<div class="inside">
@@ -148,10 +148,10 @@ function bex_admin_settings(){
 									<input type="hidden" name="bn" value="PP-BuyNowBF:btn_donateCC_LG.gif:NonHosted">
 									<input type="hidden" name="on0" value="website">
 									<input type="hidden" name="os0" value="<?php echo $_SERVER['SERVER_NAME']; ?>">
-									<input type="radio" name="amount" value="2">$2&nbsp;
 									<input type="radio" name="amount" value="5">$5&nbsp;
 									<input type="radio" name="amount" value="10">$10&nbsp;
 									<input type="radio" name="amount" value="20">$20&nbsp;
+									<input type="radio" name="amount" value="50">$50&nbsp;
 									<input type="radio" name="amount" value="">Other<br /><br />
 									<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 									<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
@@ -169,7 +169,7 @@ function bex_admin_settings(){
 				</div>
 
 				<div id="post-body-content" class="has-sidebar-content">
-					<div class="meta-box-sortabless">
+					<div class="meta-box-sortables">
 						<div class="postbox">
 							<h3>Configuration and Usage</h3>
 							<div class="inside">
@@ -182,13 +182,14 @@ function bex_admin_settings(){
 								</ol>
 							</div>
 						</div>
+						<?php if ($dropbox->IsAuthorized()) { ?>
 						<div class="postbox">
 							<h3>Options</h3>
 							<div class="inside">
 								<form method="post" action="options.php">
 								<?php
 
-								settings_fields('bex_option-settings');
+								settings_fields('bex_option-options');
 
 								if ( get_option('bex_show_moddate') == '1' ) {
 									$checkedModDate = 'checked ';
@@ -225,24 +226,99 @@ function bex_admin_settings(){
 								echo 'By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ';
 								echo 'If you want to share a subfolder under <strong>Apps/Blighty Explorer</strong>, set it here as the root folder. ';
 								echo 'This allows you to share different subfolders on different WordPress installations.<br /><br />';
+								echo '<b>Root folder:</b><br />';
 
-								echo '<b>Root folder:</b>&nbsp;<input type="text" name="bex_folder" value="' .esc_attr( get_option('bex_folder') ) .'" /><br /><br />';
-								echo '<b>Show modification date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' /><br /><br />';
+								$files = $dropbox->GetFiles('/');
+								if (count($files) == 0) {
+									echo '<input type="radio" name="bex_folder" value="/" checked />/<br />';
+								} else {
+									foreach ($files as $file) {
+										if ($file->is_dir && $filePath != BEX_UPLOADS_FOLDER) {
+											if ($file->path == get_option('bex_folder')) {
+												$checkedFolder = ' checked';
+											} else {
+												$checkedFolder = '';
+											}
+											echo '<input type="radio" name="bex_folder" value="' .$file->path .'"'.$checkedFolder .' />' .$file->path .'<br />';
+										}
+									}
+								}
+
+								echo '<br />';
+								echo '<b>Show modification date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' />&nbsp;';
 								echo '<b>Show size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br /><br />';
 								echo 'File uploads via this plugin will be stored in the folder <strong>' .BEX_UPLOADS_FOLDER .'</strong> under the <strong>Root folder</strong> above.<br /><br />';
-								echo '<b>Allow uploads when not logged in:</b>&nbsp;<input type="checkbox" name="bex_noauth_uploads" value="1"' .$checkedNoAuthUploads .' /><br /><br />';
-								//echo 'If you want to allow uploads into the folder that the user has navigated to, then check the <strong>Allow Uploads in Active Folder</strong> option below.<br /><br />';
+								echo '<b>Allow uploads to Dropbox when the WordPress user is not logged in:</b>&nbsp;<input type="checkbox" name="bex_noauth_uploads" value="1"' .$checkedNoAuthUploads .' /><br /><br />';
 
-								//echo '<b>Allow Uploads in Active Folder:</b>&nbsp;<input type="checkbox" name="bex_allow_uploads" value="1"' .$checkedAllowUploads .' /><br /><br />';
 								echo '<b>Email admin on upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
 								echo '&nbsp;Check this box to receive an email every time a user uploads a file.<br />';
+
 								submit_button();
 
 								?>
 								</form>
 							</div>
 						</div>
-					</div>
+						<div class="postbox">
+							<h3>Access Control</h3>
+							<div class="inside">
+								<form method="post" action="options.php">
+								<?php
+									global $wp_roles;
+									$roles = $wp_roles->get_names();
+									sort($roles);
+									settings_fields('bex_option-auth');
+
+									$i = 1;
+
+									echo 'Use these options to allow only logged-in WordPress users with specific roles access to individual folders under the <strong>Root Folder</strong>.<br /><br />';
+									echo 'To restrict access to the plugin completely, use a plugin such as <a href="https://wordpress.org/plugins/user-specific-content" target="_blank">User Specific Content</a> in conjunction with this one.<br /><br />';
+									echo '<b>Available Roles:</b><br />';
+									echo '<input type="checkbox" name="role_0" value="' .BEX_ANONYMOUS .'" />' .BEX_ANONYMOUS .'&nbsp;';
+									foreach ($roles as $role) {
+										echo '<input type="checkbox" name="role_' .$i .'" value="' .$role .'" />' .$role .' ';
+										$i++;
+									}
+									echo '<br /><br />';
+									echo '<b>Set on the following top-level folders:</b><br />';
+
+									$folderAuth = get_option('bex_folder_auth');
+
+									if (!$folderAuth) {
+										$folderAuth = array();
+									}
+
+								  $rootFolder = trailingslashit(get_option('bex_folder'));
+									$files = $dropbox->GetFiles($rootFolder);
+
+									$i = 0;
+									foreach ($files as $file) {
+
+										$filePath = $file->path;
+										$filePathWorking = $filePath;
+
+										$len = strlen($rootFolder);
+										if (strcasecmp(substr($filePath,0,$len),$rootFolder) == 0) {
+											$filePath = substr($filePath,$len);
+										}
+										if ($file->is_dir && $filePath != BEX_UPLOADS_FOLDER) {
+											echo '<input type="checkbox" name="bex_folder_auth_' .$i .'" value="' .$file->path .'">&nbsp;<b>' .$filePath .'</b> - (';
+											if ($folderAuth[trailingslashit($file->path)] == '') {
+												echo BEX_ANONYMOUS;
+											} else {
+												echo $folderAuth[trailingslashit($file->path)];
+											}
+											$i++;
+											echo ')<br />';
+										}
+									}
+
+									submit_button();
+								?>
+								</form>
+							</div>
+						</div>
+						<?php } ?>
 				</div>
 				<?php echo BEX_PLUGIN_NAME; ?> version <?php echo BEX_PLUGIN_VERSION; ?> by <a href="http://blighty.net" target="_blank">Blighty</a>
 			</div>
@@ -251,6 +327,7 @@ function bex_admin_settings(){
 <?php
 }
 
+/* Remove code in 1.7.0
 function bex_folder_validate($input){
 
 	if (preg_match('#^(\/)?((\w)+(\.| |\&|\-|\(|\))*(\w)*(\/)*)*(\/)?$#',$input)) {
@@ -260,12 +337,34 @@ function bex_folder_validate($input){
 			$output = '/' .$output;
 		}
 	} else {
-		add_settings_error( 'mbex_option-settings', 'invalid-folder', 'You have entered an invalid root folder.', "error" );
+		add_settings_error( 'mbex_option-options', 'invalid-folder', 'You have entered an invalid root folder.', "error" );
 		$output = "";
 	}
 
 	return $output;
 
+}
+*/
+
+function bex_folder_auth_validate($input) {
+	$role = '';
+	foreach ($_POST as $field => $value) {
+		if (substr($field,0,5) == 'role_') {
+				$role .= $value .', ';
+		}
+	}
+
+	$role = substr($role,0,strlen($role)-2);
+
+	$auth = get_option('bex_folder_auth');
+
+	foreach ($_POST as $field => $value) {
+		if (substr($field,0,16) == 'bex_folder_auth_') {
+				$auth[trailingslashit($value)] = $role;
+		}
+	}
+
+	return $auth;
 }
 
 ?>

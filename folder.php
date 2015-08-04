@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.5.2
+v1.6.0
 
 **/
 
@@ -24,7 +24,22 @@ function bex_folder( $atts ) {
 	global $dropbox;
 	$cache = array();
 
-	$rootFolder = trailingslashit(get_option('bex_folder'));
+	// Allow attribute override for root folder...
+
+	$atts = shortcode_atts(
+		array(
+			'root' => get_option('bex_folder'),
+		), $atts, 'bex_folder' );
+
+	$rootFolder = trailingslashit(esc_attr($atts['root']));
+
+	if (substr($rootFolder,0,1) != '/') {
+		$rootFolder = '/' .$rootFolder;
+	}
+
+	$user = wp_get_current_user();
+
+	$userRoles = (array) $user->roles;
 
 	$mapIcons = array(
 		"page_white_sound" => "music",
@@ -39,8 +54,11 @@ function bex_folder( $atts ) {
 	}
 
 	$workingFolder = trailingslashit($rootFolder .$folder);
-
 	$folder = trailingslashit($folder);
+
+	if (!bex_can_access($workingFolder, $rootFolder, $userRoles)) {
+		return 'You do not have access to this folder.';
+	}
 
 	if (!empty($_GET["file"])) {
 		$file = esc_attr($_GET["file"]);
@@ -131,8 +149,11 @@ function bex_folder( $atts ) {
 			$filePathWorking = substr($filePathWorking,$len);
 		}
 
-		if ($file->is_dir && $filePathWorking == BEX_UPLOADS_FOLDER) {
+		if ($file->is_dir && (
+				$filePathWorking == BEX_UPLOADS_FOLDER
+				|| bex_can_access($file->path,$rootFolder,$userRoles) == false)) {
 		// Do nothing, i.e. suppress displaying the BEX_UPLOADS_FOLDER...
+		// Or prevent access to folder if not allowed for role...
 		} else {
 			$i = 1 - $i;
 
@@ -180,6 +201,48 @@ function bex_sort_compare($a, $b) {
     } else {
     	return 1;
     }
+
+}
+
+function bex_can_access($efn,$rootFolder,$userRoles) {
+	$efn = trailingslashit($efn);
+
+	if ($rootFolder == $efn) {
+		return true;
+	}
+
+	// Get the allowable roles to access folders...
+	$folderAuth = get_option('bex_folder_auth');
+	if (!$folderAuth) {
+		// no special access rights so allow access..
+		return true;
+	}
+
+	$canAccess = false;
+	$efnFound = false;
+
+	foreach($folderAuth as $folder=>$auth) {
+		// find a match on this level or higher level...
+		if (substr($efn,0,strlen($folder)) == $folder) {
+			$efnFound = true;
+			if (is_null($folderAuth[$efn]) || ($folderAuth[$efn] == BEX_ANONYMOUS)) {
+					return true;
+			} else {
+				$roles = explode(',',$folderAuth[$efn]);
+				foreach ($roles as $role) {
+					if ( in_array( strtolower($role), $userRoles )) {
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	if (!$efnFound) {
+		return true;
+	} else {
+		return false;
+	}
 
 }
 
