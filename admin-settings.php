@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.6.0
+v1.7.0
 
 **/
 
@@ -74,6 +74,8 @@ function bex_init() {
 	register_setting( 'bex_option-options', 'bex_folder');
 	register_setting( 'bex_option-options', 'bex_show_moddate');
 	register_setting( 'bex_option-options', 'bex_show_size');
+	register_setting( 'bex_option-options', 'bex_download');
+	register_setting( 'bex_option-options', 'bex_sort_dir');
 	register_setting( 'bex_option-options', 'bex_noauth_uploads');
 	register_setting( 'bex_option-options', 'bex_email_upload');
 	register_setting( 'bex_option-auth', 'bex_folder_auth', 'bex_folder_auth_validate');
@@ -203,6 +205,12 @@ function bex_admin_settings(){
 									$checkedSize = '';
 								}
 
+								if ( get_option('bex_download') == '1' ) {
+									$checkedDownload = ' checked';
+								} else {
+									$checkedDownload = '';
+								}
+
 								if ( get_option('bex_email_upload') == '1' ) {
 									$checkedEmail = ' checked';
 								} else {
@@ -221,6 +229,14 @@ function bex_admin_settings(){
 								} else {
 									$navType0Checked = ' checked';
 									$navType1Checked = '';
+								}
+
+								if ( get_option('bex_sort_dir') == 'D' ) {
+									$checkedSortDirA = '';
+									$checkedSortDirD = ' checked';
+								} else {
+									$checkedSortDirA = ' checked';
+									$checkedSortDirD = '';
 								}
 
 								echo 'By default, folders and files are shared from your <strong>Dropbox Folder/Apps/Blighty Explorer</strong>. ';
@@ -247,9 +263,12 @@ function bex_admin_settings(){
 								echo '<br />';
 								echo '<b>Show modification date:</b>&nbsp;<input type="checkbox" name="bex_show_moddate" value="1"' .$checkedModDate .' />&nbsp;';
 								echo '<b>Show size:</b>&nbsp;<input type="checkbox" name="bex_show_size" value="1"' .$checkedSize .' /><br /><br />';
+								echo '<b>Default filename sort:</b>&nbsp;<input type="radio" name="bex_sort_dir" value="A"' .$checkedSortDirA .' />Ascending&nbsp;';
+								echo '<input type="radio" name="bex_sort_dir" value="D"' .$checkedSortDirD .' />Descending<br /><br />';
+								echo '<b>Download Files:</b>&nbsp;<input type="checkbox" name="bex_download" value="1"' .$checkedDownload .' /> Files can either be shown in the browser (default) or selected to download.<br />';
+								echo '<br />';
 								echo 'File uploads via this plugin will be stored in the folder <strong>' .BEX_UPLOADS_FOLDER .'</strong> under the <strong>Root folder</strong> above.<br /><br />';
 								echo '<b>Allow uploads to Dropbox when the WordPress user is not logged in:</b>&nbsp;<input type="checkbox" name="bex_noauth_uploads" value="1"' .$checkedNoAuthUploads .' /><br /><br />';
-
 								echo '<b>Email admin on upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
 								echo '&nbsp;Check this box to receive an email every time a user uploads a file.<br />';
 
