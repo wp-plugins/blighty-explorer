@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.6.0
+v1.7.0
 
 **/
 
@@ -29,9 +29,16 @@ function bex_folder( $atts ) {
 	$atts = shortcode_atts(
 		array(
 			'root' => get_option('bex_folder'),
+			'sortdir' => get_option('bex_sort_dir'),
 		), $atts, 'bex_folder' );
 
 	$rootFolder = trailingslashit(esc_attr($atts['root']));
+
+	if (!empty($_GET['sortdir'])) {
+		$sortDir = $_GET['sortdir'];
+	} else {
+		$sortDir = $atts['sortdir'];
+	}
 
 	if (substr($rootFolder,0,1) != '/') {
 		$rootFolder = '/' .$rootFolder;
@@ -77,8 +84,14 @@ function bex_folder( $atts ) {
 	}
 
 	if (!is_null($file)) {
+		if (get_option('bex_download') == '1') {
+			$dl = '?dl=1';
+		} else {
+			$dl = '';
+		}
+
 		$url = $dropbox->GetLink($rootFolder .$file,false,false);
-		echo '<meta http-equiv="refresh" content="0;url=' .$url .'"/>';
+		echo '<meta http-equiv="refresh" content="0;url=' .$url .$dl .'"/>';
 		//return 'Loading file...';
 	}
 
@@ -108,6 +121,12 @@ function bex_folder( $atts ) {
 		$thisQS = '?';
 	}
 
+	if ( $sortDir == 'D' ) {
+		$newSortDir = 'A';
+	} else {
+		$newSortDir = 'D';
+	}
+
 	$pluginPath = plugin_dir_path( __FILE__ );
 
 	if (substr($folder, 0, strlen($rootFolder)) == $rootFolder) {
@@ -116,7 +135,7 @@ function bex_folder( $atts ) {
 
 	// Default navigation: Display a cookie trail above folders/files...
 	$out .= '<img class="bex-img" src="' .plugins_url( 'icons/folder_explore.png', __FILE__ ) .'" /> ';
-	$out .= '<a href="' .$thisQS .'folder=/">Home</a><br />';
+	$out .= '<a href="' .$thisQS .'folder=/&sortdir=' .$sortDir .'">Home</a><br />';
 	if (strlen($folder) > 1) {
 		$splits = explode('/',untrailingslashit($folder));
 		$size = count($splits);
@@ -125,14 +144,18 @@ function bex_folder( $atts ) {
 			$slashpos = strpos($folder,"/",$j);
 			$j = $slashpos + 1;
 			$out .= str_repeat("&nbsp;",$i * 2 + 2) ." &raquo; ";
-			$out .= '<a href="' .$thisQS .'folder=' .substr($folder,0,$slashpos) .'">' .$splits[$i] .'</a><br />';
+			$out .= '<a href="' .$thisQS .'folder=' .substr($folder,0,$slashpos) .'&sortdir=' .$sortDir .'">' .$splits[$i] .'</a><br />';
 		}
 	}
 	$out .= '<br />';
 	$out .= '<div class="bex-table">';
-
+	$out .= '<div class="bex-header">';
+	$out .= '<div class="bex-cell"><a href="' .$thisQS .'folder=' .$folder .'&sortdir=' .$newSortDir .'">Name</a></div>';
+	$out .= '<div class="bex-cell-r">Date</div>';
+	$out .= '<div class="bex-cell-r">Size</div>';
+	$out .= '</div>';
 	// Sort the folder/file structure...
-	uasort($files,"bex_sort_compare");
+	uasort($files, create_function('$a, $b', 'return bex_sort_compare($a, $b, "' .$sortDir .'");') );
 
 	$i = 1;
 	foreach ($files as $file) {
@@ -161,7 +184,7 @@ function bex_folder( $atts ) {
 
 			if ($file->is_dir) {
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/folder.png', __FILE__ ) .'" />&nbsp;';
-				$out .= '<a href="' .$thisQS .'folder=' .$filePath .'">' .$filePathWorking ."</a></div>";
+				$out .= '<a href="' .$thisQS .'folder=' .$filePath .'&sortdir=' .$sortDir .'">' .$filePathWorking ."</a></div>";
 				if (get_option('bex_show_moddate')) {
 					$out .= '<div class="bex-cell-r">&nbsp;</div>';
 				}
@@ -175,7 +198,7 @@ function bex_folder( $atts ) {
 				}
 
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
-				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'">' .$filePathWorking ."</a></div>";
+				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'&sortdir=' .$sortDir .'">' .$filePathWorking ."</a></div>";
 				if (get_option('bex_show_moddate')) {
 					$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 				}
@@ -192,10 +215,14 @@ function bex_folder( $atts ) {
 	return $out;
 }
 
-function bex_sort_compare($a, $b) {
+function bex_sort_compare($a, $b, $sortDir) {
 
 	if ($a->is_dir == $b->is_dir) {
-        return strcasecmp($a->path, $b->path);
+				if ( esc_attr($sortDir) == 'D' ) {
+					return strcasecmp($b->path, $a->path);
+				} else {
+        	return strcasecmp($a->path, $b->path);
+				}
     } else if ($a->is_dir) {
     	return -1;
     } else {

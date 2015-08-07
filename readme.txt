@@ -4,7 +4,7 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.4
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,7 +13,7 @@ Allows the complete file structure of a folder in Dropbox to be shared and navig
 == Description ==
 Allows the complete file structure of a folder in Dropbox to be shared within a Wordpress page or post. The folder can then be navigated via the Wordpress site and files selected and downloaded. Changes in the Dropbox folder, such as the addition or deletion of files, are reflected through to the Wordpress site.
 
-With version 1.4.0, files can now also be uploaded into Dropbox.
+File uploads to Dropbox are also supported.
 
 == Installation ==
 - Connect this plugin to your Dropbox account.
@@ -52,6 +52,11 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.7.0 - August 7th, 2015 =
+
+* Allow for directional sorting by filename
+* Added option to download files when selected instead of presenting them in the browswer.
+
 = Version 1.6.0 - August 4th, 2015 =
 
 * Added WordPress Role support.
@@ -123,4 +128,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.6.0 - Added WordPress Role support.
+* 1.7.0 - Allow for directional sorting by filename and option to download files.
