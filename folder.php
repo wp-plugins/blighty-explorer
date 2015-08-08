@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.7.0
+v1.7.1
 
 **/
 
@@ -151,8 +151,12 @@ function bex_folder( $atts ) {
 	$out .= '<div class="bex-table">';
 	$out .= '<div class="bex-header">';
 	$out .= '<div class="bex-cell"><a href="' .$thisQS .'folder=' .$folder .'&sortdir=' .$newSortDir .'">Name</a></div>';
-	$out .= '<div class="bex-cell-r">Date</div>';
-	$out .= '<div class="bex-cell-r">Size</div>';
+	if (get_option('bex_show_moddate')) {
+		$out .= '<div class="bex-cell-r">Date</div>';
+	}
+	if (get_option('bex_show_size')) {
+		$out .= '<div class="bex-cell-r">Size</div>';
+	}
 	$out .= '</div>';
 	// Sort the folder/file structure...
 	uasort($files, create_function('$a, $b', 'return bex_sort_compare($a, $b, "' .$sortDir .'");') );
