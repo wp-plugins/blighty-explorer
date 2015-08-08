@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.7.1
+v1.7.2
 
 **/
 
@@ -32,7 +32,7 @@ function bex_folder( $atts ) {
 			'sortdir' => get_option('bex_sort_dir'),
 		), $atts, 'bex_folder' );
 
-	$rootFolder = trailingslashit(esc_attr($atts['root']));
+	$rootFolder = trailingslashit($atts['root']);
 
 	if (!empty($_GET['sortdir'])) {
 		$sortDir = $_GET['sortdir'];
@@ -54,7 +54,7 @@ function bex_folder( $atts ) {
 	);
 
 	if (!empty($_GET["folder"])) {
-		$folder = esc_attr($_GET["folder"]);
+		$folder = $_GET["folder"];
 		$folder = ltrim($folder, ".");
 	} else {
 		$folder = "";
@@ -68,7 +68,7 @@ function bex_folder( $atts ) {
 	}
 
 	if (!empty($_GET["file"])) {
-		$file = esc_attr($_GET["file"]);
+		$file = $_GET["file"];
 	} else {
 		$file = null;
 	}
@@ -222,7 +222,7 @@ function bex_folder( $atts ) {
 function bex_sort_compare($a, $b, $sortDir) {
 
 	if ($a->is_dir == $b->is_dir) {
-				if ( esc_attr($sortDir) == 'D' ) {
+				if ( $sortDir == 'D' ) {
 					return strcasecmp($b->path, $a->path);
 				} else {
         	return strcasecmp($a->path, $b->path);

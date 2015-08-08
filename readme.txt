@@ -4,7 +4,7 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.2.4
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -52,6 +52,10 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.7.2 - August 8th, 2015 =
+
+* Fixed a bug when there is an & in the Dropbox folder name.
+
 = Version 1.7.1 - August 8th, 2015 =
 
 * Fixed a bug with column header formatting introduced with 1.7.0.
@@ -132,4 +136,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.7.1 - Fixed a bug with column header formatting introduced with 1.7.0.
+* 1.7.2 - Fixed a bug when there is an & in the Dropbox folder name.
