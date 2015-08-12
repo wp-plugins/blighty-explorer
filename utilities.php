@@ -73,12 +73,12 @@ function bex_handle_dropbox_auth($dropbox)
 		$dropbox->SetAccessToken($access_token);
 		return 0;
 	}
-	elseif(!empty($_GET['auth_callback'])) // are we coming from dropbox's auth page?
+	elseif(!empty($_GET['auth_callback']) && $_GET['not_approved'] != 'true') // are we coming from dropbox's auth page?
 	{
 		// then load our previosly created request token
 		$request_token = bex_load_token($_GET['oauth_token']);
 		if(empty($request_token)) die('Dropbox request token not found!');
-		
+	
 		// get & store access token, the request token is not needed anymore
 		$access_token = $dropbox->GetAccessToken($request_token);	
 		bex_store_token($access_token, "access");

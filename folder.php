@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.7.2
+v1.8.0
 
 **/
 
@@ -90,9 +90,9 @@ function bex_folder( $atts ) {
 			$dl = '';
 		}
 
-		$url = $dropbox->GetLink($rootFolder .$file,false,false);
-		echo '<meta http-equiv="refresh" content="0;url=' .$url .$dl .'"/>';
-		//return 'Loading file...';
+		$url = $dropbox->GetLink(urldecode($rootFolder .$file),false,false);
+		wp_redirect( $url .$dl , 302 );
+		exit;
 	}
 
 	$cache = get_transient( 'bex_cache' );
@@ -202,7 +202,8 @@ function bex_folder( $atts ) {
 				}
 
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
-				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'&sortdir=' .$sortDir .'">' .$filePathWorking ."</a></div>";
+//				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'&sortdir=' .$sortDir .'">' .$filePathWorking ."</a></div>";
+				$out .= '<a href="' .$thisQS .'file=' .$filePath .'">' .$filePathWorking ."</a></div>";
 				if (get_option('bex_show_moddate')) {
 					$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 				}
@@ -276,5 +277,6 @@ function bex_can_access($efn,$rootFolder,$userRoles) {
 	}
 
 }
+
 
 ?>
