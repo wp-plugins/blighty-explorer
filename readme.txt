@@ -52,6 +52,12 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.8.0 - August 12th, 2015 =
+
+* Added support for lightbox-type plugins.
+* Improved handling of file downloads and presentation.
+* Improved handling of failed Dropbox authentication on setup.
+
 = Version 1.7.2 - August 8th, 2015 =
 
 * Fixed a bug when there is an & in the Dropbox folder name.
@@ -63,7 +69,7 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 = Version 1.7.0 - August 7th, 2015 =
 
 * Allow for directional sorting by filename
-* Added option to download files when selected instead of presenting them in the browswer.
+* Added option to download files when selected instead of presenting them in the browser.
 
 = Version 1.6.0 - August 4th, 2015 =
 
@@ -136,4 +142,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.7.2 - Fixed a bug when there is an & in the Dropbox folder name.
+* 1.8.0 - Added support for lightbox-type plugins.

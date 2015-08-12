@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.7.0
+v1.8.0
 
 **/
 
@@ -101,7 +101,9 @@ function bex_admin_settings(){
 	<div class="wrap">
 		<h2><?php echo BEX_PLUGIN_NAME; ?> version <?php echo BEX_PLUGIN_VERSION; ?></h2>
 		<?php
-		if (isset($_GET['auth_callback'])) {
+		if ($_GET['not_approved'] == 'true') {
+			echo '<div class="error"><p>Error authenticating Dropbox.</p></div>';
+		} elseif (isset($_GET['auth_callback'])) {
 			echo '<div class="updated"><p>Dropbox connection successful.</p></div>';
 		} else if (isset($_GET['bex_reset'])) {
 			echo '<div class="updated"><p>Dropbox connection has been reset.</p></div>';
