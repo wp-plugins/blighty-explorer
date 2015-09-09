@@ -3,8 +3,8 @@ Contributors: Blighty
 Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox, dropbox upload
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
-Tested up to: 4.2.4
-Stable tag: 1.8.0
+Tested up to: 4.3
+Stable tag: 1.9.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -52,6 +52,10 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.9.0 - September 9th, 2015 =
+
+* Added functionality to allow uploads into "current" folder.
+
 = Version 1.8.0 - August 12th, 2015 =
 
 * Added support for lightbox-type plugins.
@@ -142,4 +146,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.8.0 - Added support for lightbox-type plugins.
+* 1.9.0 - Added functionality to allow uploads into "current" folder.

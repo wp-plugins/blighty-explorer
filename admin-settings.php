@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.8.0
+v1.9.0
 
 **/
 
@@ -78,6 +78,7 @@ function bex_init() {
 	register_setting( 'bex_option-options', 'bex_sort_dir');
 	register_setting( 'bex_option-options', 'bex_noauth_uploads');
 	register_setting( 'bex_option-options', 'bex_email_upload');
+	register_setting( 'bex_option-options', 'bex_allow_uploads');
 	register_setting( 'bex_option-auth', 'bex_folder_auth', 'bex_folder_auth_validate');
 	register_setting( 'bex_option-options-bts', 'bex_dropbox_token' );
 	register_setting( 'bex_option-options-bts', 'bex_dropbox_temp_token' );
@@ -219,6 +220,12 @@ function bex_admin_settings(){
 									$checkedEmail = '';
 								}
 
+								if ( get_option('bex_allow_upload') == '1' ) {
+									$checkedAllowUploads = ' checked';
+								} else {
+									$checkedAllowUploads = '';
+								}
+
 								if ( get_option('bex_noauth_uploads') == '1' ) {
 									$checkedNoAuthUploads = ' checked';
 								} else {
@@ -270,6 +277,8 @@ function bex_admin_settings(){
 								echo '<b>Download Files:</b>&nbsp;<input type="checkbox" name="bex_download" value="1"' .$checkedDownload .' /> Files can either be shown in the browser (default) or selected to download.<br />';
 								echo '<br />';
 								echo 'File uploads via this plugin will be stored in the folder <strong>' .BEX_UPLOADS_FOLDER .'</strong> under the <strong>Root folder</strong> above.<br /><br />';
+								echo 'If you want to allow uploads into the folder that the user has navigated to, then check the <strong>Allow Uploads in Active Folder</strong> option below.<br /><br />';
+								echo '<b>Allow Uploads in Active Folder:</b>&nbsp;<input type="checkbox" name="bex_allow_uploads" value="1"' .$checkedAllowUploads .' /><br /><br />';
 								echo '<b>Allow uploads to Dropbox when the WordPress user is not logged in:</b>&nbsp;<input type="checkbox" name="bex_noauth_uploads" value="1"' .$checkedNoAuthUploads .' /><br /><br />';
 								echo '<b>Email admin on upload:</b>&nbsp;<input type="checkbox" name="bex_email_upload" value="1"' .$checkedEmail .' />';
 								echo '&nbsp;Check this box to receive an email every time a user uploads a file.<br />';

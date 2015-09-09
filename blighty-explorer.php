@@ -6,7 +6,7 @@
  * The folder tree can be navigated and files downloaded. Changes to the original Dropbox folder are reflected through
  * to the website. It is also provides functionality to allow for uploads to a Dropbox folder.
  * (C) 2015 Chris Murfin (Blighty)
- * Version: 1.8.0
+ * Version: 1.9.0
  * Author: Blighty
  * Author URI: http://blighty.net
  * License: GPLv3 or later
@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 defined('ABSPATH') or die('Plugin file cannot be accessed directly.');
 
 define('BEX_PLUGIN_NAME', 'Blighty Explorer');
-define('BEX_PLUGIN_VERSION', '1.8.0');
+define('BEX_PLUGIN_VERSION', '1.9.0');
 
 define('BEX_UPLOADS_FOLDER', '_bex_uploads');
 
