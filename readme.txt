@@ -3,8 +3,8 @@ Contributors: Blighty
 Tags: dropbox explorer, dropbox, file manager, explorer, file management, document management, digital store, integrate dropbox, embed dropbox, dropbox upload
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
-Tested up to: 4.2.4
-Stable tag: 1.7.2
+Tested up to: 4.3
+Stable tag: 1.9.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -52,6 +52,16 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.9.0 - September 9th, 2015 =
+
+* Added functionality to allow uploads into "current" folder.
+
+= Version 1.8.0 - August 12th, 2015 =
+
+* Added support for lightbox-type plugins.
+* Improved handling of file downloads and presentation.
+* Improved handling of failed Dropbox authentication on setup.
+
 = Version 1.7.2 - August 8th, 2015 =
 
 * Fixed a bug when there is an & in the Dropbox folder name.
@@ -63,7 +73,7 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 = Version 1.7.0 - August 7th, 2015 =
 
 * Allow for directional sorting by filename
-* Added option to download files when selected instead of presenting them in the browswer.
+* Added option to download files when selected instead of presenting them in the browser.
 
 = Version 1.6.0 - August 4th, 2015 =
 
@@ -136,4 +146,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.7.2 - Fixed a bug when there is an & in the Dropbox folder name.
+* 1.9.0 - Added functionality to allow uploads into "current" folder.
