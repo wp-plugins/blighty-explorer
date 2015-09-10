@@ -52,6 +52,11 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.9.1 - September 10th, 2015 =
+
+* Added support for root folder override on both [bex_folder] and [bex_upload] shortcodes.
+* Added the folder to the upload email.
+
 = Version 1.9.0 - September 9th, 2015 =
 
 * Added functionality to allow uploads into "current" folder.
@@ -146,4 +151,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.9.0 - Added functionality to allow uploads into "current" folder.
+* 1.9.1 - Added support for root folder override on both [bex_folder] and [bex_upload] shortcodes.
