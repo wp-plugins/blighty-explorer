@@ -16,11 +16,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.9.0
+v1.9.1
 
 **/
 
 function bex_upload( $atts ) {
+
+	$atts = shortcode_atts(
+		array(
+			'root' => get_option('bex_folder'),
+		), $atts, 'bex_folder' );
+
+	$rootFolder = trailingslashit($atts['root']);
+
 	if (!empty($_GET["folder"])) {
 		$folder = esc_attr($_GET["folder"]);
 		$folder = ltrim($folder, ".");
@@ -32,7 +40,7 @@ function bex_upload( $atts ) {
 	$out .= '  Select file to upload:';
 	$out .= '  <input type="file" name="bexFile" id="bexFile">';
 	$out .= '  <input type="submit" value="Upload" name="bexSubmit" id="bexSubmit" class="bex-button-submit">';
-	$out .= '  <input type="hidden" name="bexFolder" id="bexFolder" value="' .$folder .'">';
+	$out .= '  <input type="hidden" name="bexFolder" id="bexFolder" value="' .$rootFolder .$folder .'">';
 	$out .= '<br /><br /><div class="bex-progress">';
 	$out .= '  <div class="bex-bar"></div >';
 	$out .= '  <div class="bex-percent">0%</div >';
@@ -80,7 +88,8 @@ function bex_submission_processor() {
 		$folder = BEX_UPLOADS_FOLDER;
 	}
 
-	$workingFolder = trailingslashit($rootFolder .$folder);
+	//$workingFolder = trailingslashit($rootFolder .$folder);
+	$workingFolder = trailingslashit($folder);
 
 	if (!empty($_POST['bexSubmit'])) {
 		$dropbox->UploadFile($_FILES["bexFile"]["tmp_name"], $workingFolder .$_FILES["bexFile"]["name"], false);
@@ -101,8 +110,8 @@ function bex_submission_processor() {
 
 		$headers = 'From: ' .get_bloginfo('name') .' <' .get_bloginfo('admin_email') .'>' . "\r\n";
 		$subj = '[' .get_bloginfo('name') .'] File Upload';
-		$body = 'The file "' .$_FILES["bexFile"]["name"] .'" has just been uploaded by ' .$userLogin
-				.' (' .$userEmail .')';
+		$body = 'The file "' .$_FILES["bexFile"]["name"] .'" has just been uploaded to ' .$workingFolder
+			  .' by ' .$userLogin .' (' .$userEmail .')';
 		wp_mail( get_bloginfo('admin_email'), $subj, $body, $headers );
 	}
 
