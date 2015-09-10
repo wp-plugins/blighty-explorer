@@ -44,7 +44,7 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 
 = I want to only allow logged-in WordPress users or users with certain roles access to using the plugin. How do I do that? =
 Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-specific-content/) in conjunction with this one in order to protect the page.
-
+ 
 == Screenshots ==
 
 1. Admin screen to connect to your Dropbox account and set plugin options.
