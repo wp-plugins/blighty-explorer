@@ -52,6 +52,10 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.9.2 - October 27th, 2015 =
+
+* Minor fix to stylesheet for bex-wrapper selector.
+
 = Version 1.9.1 - September 10th, 2015 =
 
 * Added support for root folder override on both [bex_folder] and [bex_upload] shortcodes.
@@ -151,4 +155,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.9.1 - Added support for root folder override on both [bex_folder] and [bex_upload] shortcodes.
+* 1.9.2 - Minor fix to stylesheet for bex-wrapper selector.
