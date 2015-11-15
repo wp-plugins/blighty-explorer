@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.9.0
+v1.9.3
 
 **/
 
@@ -220,7 +220,7 @@ function bex_admin_settings(){
 									$checkedEmail = '';
 								}
 
-								if ( get_option('bex_allow_upload') == '1' ) {
+								if ( get_option('bex_allow_uploads') == '1' ) {
 									$checkedAllowUploads = ' checked';
 								} else {
 									$checkedAllowUploads = '';

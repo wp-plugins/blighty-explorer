@@ -4,7 +4,7 @@ Tags: dropbox explorer, dropbox, file manager, explorer, file management, docume
 Donate link: http://blighty.net/go/blighty-explorer-plugin-paypal-donation/
 Requires at least: 4.1.1
 Tested up to: 4.3.1
-Stable tag: 1.9.2
+Stable tag: 1.9.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -44,7 +44,7 @@ Prior to version 1.5.1, there may have been problems with certain browsers and/o
 
 = I want to only allow logged-in WordPress users or users with certain roles access to using the plugin. How do I do that? =
 Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-specific-content/) in conjunction with this one in order to protect the page.
- 
+
 == Screenshots ==
 
 1. Admin screen to connect to your Dropbox account and set plugin options.
@@ -52,6 +52,10 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 3. Example file upload.
 
 == Changelog ==
+= Version 1.9.3 - November 15th, 2015 =
+
+* Bug fix. "Allow Uploads" setting not reflecting status correctly in admin options.
+
 = Version 1.9.2 - October 27th, 2015 =
 
 * Minor fix to stylesheet for bex-wrapper selector.
@@ -155,4 +159,4 @@ Use a plugin such as [User Specific Content](https://wordpress.org/plugins/user-
 * Initial release.
 
 == Upgrade Notice ==
-* 1.9.2 - Minor fix to stylesheet for bex-wrapper selector.
+* 1.9.3 - Bug fix. "Allow Uploads" setting not reflecting status correctly in admin options.
