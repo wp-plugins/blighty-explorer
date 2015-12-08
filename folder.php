@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-v1.8.0
+v1.9.4
 
 **/
 
@@ -203,7 +203,7 @@ function bex_folder( $atts ) {
 
 				$out .= '<div class="bex-cell"><img class="bex-img" src="' .plugins_url( 'icons/'. $icon .'.png', __FILE__ ) .'" />&nbsp;';
 //				$out .= '<a href="' .$thisQS .'folder=' .$folder . '&file=' .$filePath .'&sortdir=' .$sortDir .'">' .$filePathWorking ."</a></div>";
-				$out .= '<a href="' .$thisQS .'file=' .$filePath .'">' .$filePathWorking ."</a></div>";
+				$out .= '<a href="' .$thisQS .'file=' .urlencode($filePath) .'">' .$filePathWorking ."</a></div>";
 				if (get_option('bex_show_moddate')) {
 					$out .= '<div class="bex-cell-r">' .substr($file->modified,5,17) . '</div>';
 				}
